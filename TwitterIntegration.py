@@ -22,10 +22,10 @@ def getTokenUserless():
 
 
 def getSearch(searchEncoded, bearerToken):
-    url = 'https://api.twitter.com/1.1/search/tweets.json?q='+searchEncoded
+    url = 'https://api.twitter.com/1.1/search/tweets.json?q='+searchEncoded+"&lang=en&count=100"
     req = urllib2.Request(url)
     req.add_header('Authorization', bearerToken)
     response = urllib2.urlopen(req).read()
     jsonO = json.loads(response)
-    #print(json.dumps(jsonO, indent=4))
+    print(json.dumps(jsonO, indent=4))
     return jsonO
