@@ -26,4 +26,6 @@ def getSearch(searchEncoded, bearerToken):
     req = urllib2.Request(url)
     req.add_header('Authorization', bearerToken)
     response = urllib2.urlopen(req).read()
-    return json.loads(response)
+    jsonO = json.loads(response)
+    #print(json.dumps(jsonO, indent=4))
+    return jsonO
