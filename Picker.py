@@ -7,4 +7,3 @@ searchEncoded = urllib.quote(rawKey)
 
 tokenUserless = TwitterIntegration.getTokenUserless()
 searchRaw = TwitterIntegration.getSearch(searchEncoded, tokenUserless)
-print searchRaw
