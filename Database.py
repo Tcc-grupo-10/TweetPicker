@@ -1,8 +1,13 @@
 import boto3
 import DatabaseCreator
+import os
+
+
+accessKey = os.environ['access_key']
+secretAccess = os.environ['secret_access']
 
 # Get the service resource.
-dynamodb = boto3.resource('dynamodb', endpoint_url='http://localhost:8000', region_name='us-west-2', aws_access_key_id='foo', aws_secret_access_key='foo')
+dynamodb = boto3.resource('dynamodb', region_name='sa-east-1', aws_access_key_id=accessKey, aws_secret_access_key=secretAccess)
 
 tweetTable = DatabaseCreator.tweetTable(dynamodb)
 
