@@ -24,7 +24,10 @@
 #### Running 
     - Windows:
         - Edit the run.bat file and push your credentials
+        - Just double click on it! (Windows been Windows)
     - Mac/Linux:
         - Edit the run.sh file and push your credentials
+        - On terminal:
+            - ./run.sh
         
     - DO NOT COMMIT/PUSH TO GITHUB THIS FILE!! 
