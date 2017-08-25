@@ -2,10 +2,12 @@ import base64
 import urllib
 import urllib2
 import json
+import os
 
 #Twitter's keys
-consumerKeyTwitter = "9cuNRRcqj3wnd7jrUw7Rw1DKw"
-consumerSecretTwitter = "KZ66L3zmIxQdW0LSwcCoyAN0iXCzusnQTGDmEz6vwAGhq4cFss"
+
+consumerKeyTwitter = os.environ['consumer_key_twitter']
+consumerSecretTwitter = os.environ['consumer_secret_twitter']
 
 #Twitter's API Token
 base64Secret = "Basic " + base64.b64encode(consumerKeyTwitter+":"+consumerSecretTwitter)
