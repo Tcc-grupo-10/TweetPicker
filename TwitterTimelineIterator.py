@@ -1,4 +1,6 @@
 import Database
+import time
+import TwitterIntegration
 
 def saveNext(searchRaw, rawKey):
 
@@ -21,3 +23,25 @@ def saveNext(searchRaw, rawKey):
     Database.countItens()
 
     return searchRaw.get("search_metadata", {}).get("next_results", "")
+
+
+def waitTime(minutes):
+    mins = 0
+    while mins != minutes:
+        print ">>> Waiting Twitter Rate Limit Reset:", mins, "/", minutes
+        time.sleep(60)
+        mins += 1
+
+
+def getTweetsRec(tokenUserless, rawKey, nextUrl, times, runs, searchEncoded):
+    print "Run n:", runs
+    for x in range(0, times):
+        if nextUrl != "":
+            searchRaw = TwitterIntegration.getNextSearch(nextUrl, tokenUserless)
+            nextUrl = saveNext(searchRaw, rawKey)
+        else:
+            searchRaw = TwitterIntegration.getSearch(searchEncoded, tokenUserless)
+            nextUrl = saveNext(searchRaw, rawKey)
+
+    waitTime(16)
+    getTweetsRec(tokenUserless, rawKey, "", 249, runs + 1)

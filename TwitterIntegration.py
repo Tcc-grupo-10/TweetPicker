@@ -37,6 +37,5 @@ def getNextSearch(nextUrl, bearerToken):
     req.add_header('Authorization', bearerToken)
     response = urllib2.urlopen(req).read()
     jsonO = json.loads(response)
-    print "HEUHEUEHUEHEU"
-    print(json.dumps(jsonO, indent=4))
+    #print(json.dumps(jsonO, indent=4))
     return jsonO
