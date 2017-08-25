@@ -1,7 +1,6 @@
 # TweetPicker
 
 #### Install Windows
-    - PyCharm
     - Python 2.7
         - https://www.python.org/download/releases/2.7/
         - Export C:\Python27\ as env vars

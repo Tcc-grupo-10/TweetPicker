@@ -2,12 +2,10 @@ def tweetTable(dynamodb):
     tableName = 'tweets'
 
     try:
-        print "<< -- TRYING -- >> "
         dynamodb.Table(tableName).creation_date_time
         return dynamodb.Table(tableName)
 
-    except Exception, e:
-        print '<< -- FAIL -->>  ' + str(e)
+    except Exception:
         table = dynamodb.create_table(
             TableName=tableName,
             KeySchema=[
