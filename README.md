@@ -4,6 +4,8 @@
     - Python 2.7
         - https://www.python.org/download/releases/2.7/
         - Export C:\Python27\ as env vars
+            - Control Panel\System and Security\System -> Advanced System Settings -> Environment Variables -> Edit PATH
+            - Remembering: Every export, you should close all your CMD windows
     - PIP install: 
         - Inside of this folder, run: 
             - python get-pip.py
