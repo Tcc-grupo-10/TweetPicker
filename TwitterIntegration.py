@@ -24,7 +24,7 @@ def getTokenUserless():
 
 
 def getSearch(searchEncoded, bearerToken):
-    url = 'https://api.twitter.com/1.1/search/tweets.json?q='+searchEncoded+"&lang=en&count=1"
+    url = 'https://api.twitter.com/1.1/search/tweets.json?q='+searchEncoded+"&lang=en&count=100"
     req = urllib2.Request(url)
     req.add_header('Authorization', bearerToken)
     response = urllib2.urlopen(req).read()
