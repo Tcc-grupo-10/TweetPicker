@@ -20,7 +20,7 @@ def saveNext(searchRaw, rawKey):
 
         Database.insertItem(item)
 
-    Database.countItens()
+    #Database.countItens()
 
     return searchRaw.get("search_metadata", {}).get("next_results", "")
 
@@ -44,4 +44,4 @@ def getTweetsRec(tokenUserless, rawKey, nextUrl, times, runs, searchEncoded):
             nextUrl = saveNext(searchRaw, rawKey)
 
     waitTime(16)
-    getTweetsRec(tokenUserless, rawKey, "", 249, runs + 1)
+    getTweetsRec(tokenUserless, rawKey, "", times, runs + 1, searchEncoded)
