@@ -11,9 +11,12 @@ dynamodb = boto3.resource('dynamodb', region_name='sa-east-1', aws_access_key_id
 
 tweetTable = DatabaseCreator.tweetTable(dynamodb)
 
-def insertItem(item):
-    tweetTable.put_item(Item = item)
+def insertItem(item, table):
+    try:
+        table.put_item(Item = item)
+    except Exception as e:
+        print "ERRO INSERINDO: ({0}): {1}".format(e.errno, e.strerror)
 
 
-def countItens():
-    print tweetTable.item_count
+def countItens(table):
+    print table.item_count

@@ -18,7 +18,7 @@ def saveNext(searchRaw, rawKey):
             'search_key': rawKey
         }
 
-        Database.insertItem(item)
+        Database.insertItem(item, Database.tweetTable)
 
     #Database.countItens()
 
