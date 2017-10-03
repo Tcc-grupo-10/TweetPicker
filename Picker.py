@@ -3,7 +3,7 @@ import TwitterIntegration
 import TwitterTimelineIterator
 
 #SearchHotkeys
-rawKey = "game of thrones"
+rawKey = "WinterIsHere"
 searchEncoded = urllib.quote(rawKey)
 
 #Getting token "userless"

@@ -1,5 +1,5 @@
 def tweetTable(dynamodb):
-    tableName = 'tweets'
+    tableName = 'tweets15'
 
     try:
         dynamodb.Table(tableName).creation_date_time
@@ -22,11 +22,11 @@ def tweetTable(dynamodb):
             ],
             ProvisionedThroughput={
                 'ReadCapacityUnits': 5,
-                'WriteCapacityUnits': 5
+                'WriteCapacityUnits': 15
             }
         )
 
         # Wait until the table exists.
-        table.meta.client.get_waiter('table_exists').wait(TableName='tweets')
+        table.meta.client.get_waiter('table_exists').wait(TableName='tweets15')
 
         return table
