@@ -4,10 +4,10 @@ import Database
 import DatabaseCreator
 import re
 from unidecode import unidecode
-
+import emoji
 
 def processTweet(tweet):
-    #TODO -> emoji to text HERE
+    tweet = emoji.demojize(tweet, delimiters=(" :", ": "))
 
     #To unicode
     tweet = unidecode(tweet)
@@ -16,7 +16,7 @@ def processTweet(tweet):
     #Convert to lower case
     tweet = tweet.lower()
     #Convert www.* or https?://* to URL
-    tweet = re.sub('((www\.[^\s]+)|(https?://[^\s]+))', '', tweet)
+    tweet = re.sub('((www\.[^\s]+)|(https?:/[^\s]+))', '', tweet)
     #Removing \n
     tweet = tweet.replace('\n', ' ')
     #Remove additional white spaces
@@ -55,8 +55,4 @@ print len(allTweets)
     print len(allTweets)"""
 
 for i in allTweets:
-    print i
-    i["text"] = processTweet(i["text"])
-    print i
     print i["text"]
-    print "\n\n"

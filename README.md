@@ -13,6 +13,7 @@
     - PIP packages
         - pip install boto3
         - pip install unidecode
+        - pip install emoji
         
         
 #### Accounts to create
