@@ -12,6 +12,7 @@
         - Export the C:\Python27\Scripts as env var
     - PIP packages
         - pip install boto3
+        - pip install unidecode
         
         
 #### Accounts to create
