@@ -32,6 +32,8 @@ def processTweet(tweet):
     tweet = tweet.replace('&lt;', '<')
     tweet = tweet.replace('&gt;', '>')
 
+    # encontrar uma lib que possa fazer essa substituição
+
     return tweet
 
 
@@ -44,17 +46,18 @@ secretAccess = os.environ['secret_access']
 # Get the service resource.
 dynamodb = boto3.resource('dynamodb', region_name='sa-east-1', aws_access_key_id=accessKey, aws_secret_access_key=secretAccess)
 tweetRTTable = DatabaseCreator.tweetRTTable(dynamodb)
-# unTweeterizeTable = DatabaseCreator.unTweeterizeTable(dynamodb)
+unTweeterizeTable = DatabaseCreator.unTweeterizeTable(dynamodb)
 
 response = tweetRTTable.scan()
 allTweets = response['Items']
 print len(allTweets)
 
-"""while 'LastEvaluatedKey' in response:
-    response = boto3.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
+while 'LastEvaluatedKey' in response:
+    response = tweetRTTable.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
     allTweets.extend(response['Items'])
-    print len(allTweets)"""
+    print len(allTweets)
 
 for i in allTweets:
+    i["text"] = processTweet(i["text"])
     print i["text"]
-    # Database.insertItem(i, unTweeterizeTable)
+    Database.insertItem(i, unTweeterizeTable)

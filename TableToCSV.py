@@ -15,7 +15,7 @@ allTweets = response['Items']
 print len(allTweets)
 
 while 'LastEvaluatedKey' in response:
-    response = boto3.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
+    response = unTweeterizeTable.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
     allTweets.extend(response['Items'])
     print len(allTweets)
 
