@@ -1,24 +1,16 @@
-import boto3
 import os
-import Database
-import DatabaseCreator
-
+import Databases
 
 accessKey = os.environ['access_key']
 secretAccess = os.environ['secret_access']
 
-# Get the service resource.
-dynamodb = boto3.resource('dynamodb', region_name='sa-east-1', aws_access_key_id=accessKey, aws_secret_access_key=secretAccess)
-tweetsTable = DatabaseCreator.tweetTable(dynamodb)
-tweetsRTClean = DatabaseCreator.tweetRTTable(dynamodb)
-
-response = tweetsTable.scan()
+response = Databases.Database.tweetsTable.scan()
 allTweets = response['Items']
 
 print len(allTweets)
 
 while 'LastEvaluatedKey' in response:
-    response = tweetsTable.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
+    response = Databases.Database.tweetsTable.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
     allTweets.extend(response['Items'])
     print len(allTweets)
 
@@ -32,7 +24,7 @@ for tweet in allTweets:
     else:
         notRt = notRt + 1
         print "\nNOT Retweet: {} | ".format(notRt) + tweet["text"]
-        Database.insertItem(i, tweetsRTClean)
+        Databases.insertItem(tweet, Databases.Database.tweetRTTable)
 
 
 print "\n\n"

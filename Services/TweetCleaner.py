@@ -1,10 +1,7 @@
-import Database
-import DatabaseCreator
 import re
-from unidecode import unidecode
-import emoji
 import xml.etree.ElementTree
-
+import emoji
+from unidecode import unidecode
 
 def removeTags(text):
 
@@ -46,25 +43,3 @@ def processTweet(tweet):
     # encontrar uma lib que possa fazer essa substituição
 
     return tweet
-
-
-# Script \/
-
-# Get the service resource.
-dynamodb = Database.dynamodb
-tweetRTTable = DatabaseCreator.tweetRTTable(dynamodb)
-unTweeterizeTable = DatabaseCreator.unTweeterizeTable(dynamodb)
-
-response = tweetRTTable.scan()
-allTweets = response['Items']
-print len(allTweets)
-
-while 'LastEvaluatedKey' in response:
-    response = tweetRTTable.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
-    allTweets.extend(response['Items'])
-    print len(allTweets)
-
-for tweet in allTweets:
-    tweet["text"] = processTweet(tweet["text"])
-    print tweet["text"]
-    Database.insertItem(tweet, unTweeterizeTable)

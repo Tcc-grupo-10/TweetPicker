@@ -1,7 +1,9 @@
-import boto3
-import os
-import DatabaseCreator
 import csv
+import os
+
+import boto3
+
+from Databases import DatabaseCreator
 
 accessKey = os.environ['access_key']
 secretAccess = os.environ['secret_access']

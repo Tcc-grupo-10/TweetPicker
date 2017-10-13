@@ -1,6 +1,7 @@
-import Database
 import time
+
 import TwitterIntegration
+from Databases import Database
 
 
 def saveNext(searchRaw, rawKey):
