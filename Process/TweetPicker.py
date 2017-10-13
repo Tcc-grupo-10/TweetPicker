@@ -1,10 +1,8 @@
-import time
-
-import TwitterIntegration
 from Databases import Database
+from Services import TwitterIntegration
 
 
-def saveNext(searchRaw, rawKey):
+def saveNext(searchRaw, rawKey, runId):
 
     statuses = searchRaw.get("statuses", [])
 
@@ -19,15 +17,29 @@ def saveNext(searchRaw, rawKey):
                 'user_id': status.get("user", {"id_str": "user_not_found"}).get("id_str", "no_id"),
                 'created_at': status.get("created_at", "duno"),
                 'language': status.get("lang", "unknown"),
-                'search_key': rawKey
+                'search_key': rawKey,
+                'run_id': runId
             }
 
-            Database.insertItem(item, Database.tweetTable)
+            Database.insertItem(item, Database.rawTweets)
 
     return searchRaw.get("search_metadata", {}).get("next_results", "")
 
 
-def waitTime(minutes):
+def getTweets(tokenUserless, rawKey, tweetAmount, searchEncoded, runId):
+    times = tweetAmount / 100 + 1
+
+    searchRaw = TwitterIntegration.getSearch(searchEncoded, tokenUserless)
+    nextUrl = saveNext(searchRaw, rawKey, runId)
+
+    for x in range(0, times):
+        searchRaw = TwitterIntegration.getNextSearch(nextUrl, tokenUserless)
+        nextUrl = saveNext(searchRaw, rawKey, runId)
+
+    return True
+
+
+"""def waitTime(minutes):
     mins = 0
     while mins != minutes:
         print ">>> Waiting Twitter Rate Limit Reset:", mins, "/", minutes
@@ -46,4 +58,4 @@ def getTweetsRec(tokenUserless, rawKey, nextUrl, times, runs, searchEncoded):
             nextUrl = saveNext(searchRaw, rawKey)
 
     waitTime(16)
-    getTweetsRec(tokenUserless, rawKey, "", times, runs + 1, searchEncoded)
+    getTweetsRec(tokenUserless, rawKey, "", times, runs + 1, searchEncoded)"""
