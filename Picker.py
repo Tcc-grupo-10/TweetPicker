@@ -2,15 +2,18 @@ import urllib
 import TwitterIntegration
 import TwitterTimelineIterator
 
-#SearchHotkeys
+# SearchHotkeys
 rawKey = "WinterIsHere"
+
+if not rawKey.startswith("#"):
+    rawKey = "#" + rawKey
 searchEncoded = urllib.quote(rawKey)
 
-#Getting token "userless"
+# Getting token "userless"
 tokenUserless = TwitterIntegration.getTokenUserless()
 
-#Get and Process Tweets
+# Get and Process Tweets
+# TODO -> Get a fixed number of tweets.. not a infinity loop
 TwitterTimelineIterator.getTweetsRec(tokenUserless, rawKey, "", 449, 1, searchEncoded)
 
-#TODO - If we have time, change to Python 3 (current 2.7)
-#TODO - If we have time, use "user token" - browser needed
+
