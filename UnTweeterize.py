@@ -1,10 +1,18 @@
-import boto3
-import os
 import Database
 import DatabaseCreator
 import re
 from unidecode import unidecode
 import emoji
+import xml.etree.ElementTree
+
+
+def removeTags(text):
+
+    try:
+        text = ''.join(xml.etree.ElementTree.fromstring("<p>" + text + "</p>").itertext())
+    finally:
+        return text
+
 
 def processTweet(tweet):
     tweet = emoji.demojize(tweet, delimiters=(" :", ": "))
@@ -26,6 +34,9 @@ def processTweet(tweet):
     # Trim
     tweet = tweet.strip()
 
+    #Removing HTML tags
+    tweet = removeTags(tweet)
+
     # Replacing unknown chars
     tweet = tweet.replace('[?]', '')
     tweet = tweet.replace('&amp;', '&')
@@ -39,12 +50,8 @@ def processTweet(tweet):
 
 # Script \/
 
-
-accessKey = os.environ['access_key']
-secretAccess = os.environ['secret_access']
-
 # Get the service resource.
-dynamodb = boto3.resource('dynamodb', region_name='sa-east-1', aws_access_key_id=accessKey, aws_secret_access_key=secretAccess)
+dynamodb = Database.dynamodb
 tweetRTTable = DatabaseCreator.tweetRTTable(dynamodb)
 unTweeterizeTable = DatabaseCreator.unTweeterizeTable(dynamodb)
 
@@ -57,7 +64,7 @@ while 'LastEvaluatedKey' in response:
     allTweets.extend(response['Items'])
     print len(allTweets)
 
-for i in allTweets:
-    i["text"] = processTweet(i["text"])
-    print i["text"]
-    Database.insertItem(i, unTweeterizeTable)
+for tweet in allTweets:
+    tweet["text"] = processTweet(tweet["text"])
+    print tweet["text"]
+    Database.insertItem(tweet, unTweeterizeTable)

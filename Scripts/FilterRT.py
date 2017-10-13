@@ -25,13 +25,13 @@ while 'LastEvaluatedKey' in response:
 isRt = 0
 notRt = 0
 
-for i in allTweets:
-    if "RT " in i["text"]:
+for tweet in allTweets:
+    if "RT " in tweet["text"]:
         isRt = isRt + 1
-        print "\nIS Retweet: {} | ".format(isRt) + i["text"]
+        print "\nIS Retweet: {} | ".format(isRt) + tweet["text"]
     else:
         notRt = notRt + 1
-        print "\nNOT Retweet: {} | ".format(notRt) + i["text"]
+        print "\nNOT Retweet: {} | ".format(notRt) + tweet["text"]
         Database.insertItem(i, tweetsRTClean)
 
 

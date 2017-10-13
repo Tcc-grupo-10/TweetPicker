@@ -9,6 +9,8 @@ if not rawKey.startswith("#"):
     rawKey = "#" + rawKey
 searchEncoded = urllib.quote(rawKey)
 
+# TODO -> Drop the last run with the same #? Use the same results?
+
 # Getting token "userless"
 tokenUserless = TwitterIntegration.getTokenUserless()
 
