@@ -15,8 +15,7 @@ def run():
         cleanTweet = Services.TweetCleaner.processTweet(tweet["text"])
         spellCheck = Services.SpellCheck.processTweet(cleanTweet)
 
-        tweet["text"] = spellCheck
-        tweet["rawTweet"] = False
-        tweet["preprocessed"] = True
-        print tweet["text"]
+        tweet["clean_text"] = spellCheck
+        tweet["raw_tweet"] = False
+        tweet["preprocessed_tweet"] = True
         Databases.Database.updateItem(tweet, Databases.Database.rawTweets)

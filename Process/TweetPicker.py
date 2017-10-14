@@ -19,7 +19,7 @@ def saveNext(searchRaw, rawKey, runId):
                 'language': status.get("lang", "unknown"),
                 'search_key': rawKey,
                 'run_id': runId,
-                'rawTweet': True
+                'raw_tweet': True
             }
 
             Database.insertItem(item, Database.rawTweets)
