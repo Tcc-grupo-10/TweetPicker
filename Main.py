@@ -1,5 +1,7 @@
 import urllib
-
+import hashlib
+import datetime
+from random import randint
 from Process import TweetPicker
 from Services import TwitterIntegration
 from Process import PreProcessing
@@ -11,8 +13,8 @@ if not rawKey.startswith("#"):
     rawKey = "#" + rawKey
 searchEncoded = urllib.quote(rawKey)
 
-# TODO -> CREATE A VALID RUN_ID ( hash(rawkey + date + random number) ?)
-runId = "HEUHEUHUEBRBR"
+rawId = rawKey + "|" + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "|{}".format(randint(0, 100))
+runId = hashlib.md5(rawId.encode()).hexdigest()
 
 # Getting token "userless"
 tokenUserless = TwitterIntegration.getTokenUserless()
