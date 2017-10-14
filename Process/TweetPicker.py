@@ -18,7 +18,8 @@ def saveNext(searchRaw, rawKey, runId):
                 'created_at': status.get("created_at", "duno"),
                 'language': status.get("lang", "unknown"),
                 'search_key': rawKey,
-                'run_id': runId
+                'run_id': runId,
+                'rawTweet': True
             }
 
             Database.insertItem(item, Database.rawTweets)
