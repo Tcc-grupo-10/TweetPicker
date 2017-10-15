@@ -29,8 +29,8 @@ for tweet in allTweets:
     tweetCsv = filter(lambda x: x[0] == tweet["tweet_id"], csvData)
 
     if len(tweetCsv) == 1:
-        tweet["is_spam"] = tweetCsv[1]
-        tweet["is_irrelevant"] = tweetCsv[2]
+        tweet["is_spam"] = tweetCsv[0][1]
+        tweet["is_irrelevant"] = tweetCsv[0][2]
 
     # TODO -> Update unTweeterizeTable
 

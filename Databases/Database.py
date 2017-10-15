@@ -46,3 +46,9 @@ def getAll(table):
         response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
         allTweets.extend(response['Items'])
         print len(allTweets)
+
+    return allTweets
+
+
+def deleteItem(tweet_id, table):
+    table.delete_item(Key={"tweet_id": tweet_id})
