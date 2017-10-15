@@ -2,9 +2,8 @@ import urllib
 import hashlib
 import datetime
 from random import randint
-from Process import TweetPicker
+from Process import TweetPicker, SpamFiltering, PreProcessing, SentimentClassifier
 from Services import TwitterIntegration
-from Process import PreProcessing
 
 # SearchHotkeys
 rawKey = "WinterIsHere"
@@ -26,3 +25,9 @@ gotThemAll = TweetPicker.getTweets(tokenUserless, rawKey, numberOfTweets, search
 
 PreProcessing.run()
 
+SpamFiltering.run()
+
+sentiments = SentimentClassifier.run()
+
+# TODO -> How we should display this? (Current: JSON)
+print sentiments
