@@ -1,9 +1,11 @@
 import language_check
 import nltk
+import string
+import re
+
 import enchant
 import enchant.checker
 from enchant.checker.CmdLineChecker import CmdLineChecker
-
 
 def spellCheck(tweet):
     tool = language_check.LanguageTool('en-US')
@@ -16,16 +18,43 @@ def spellCheck(tweet):
             break
     return tweet
 
-def acronimCheck():
-    tweet = "teste"
-    enchant.add(tweet)
+def untokenize(tokens):
+    #text = "".join([" " + i if not i.startswith("'") and i not in string.punctuation else i for i in tokens]).strip()
 
+    text = ' '.join(tokens)
+    step1 = text.replace("`` ", '"').replace(" ''", '"').replace('. . .', '...')
+    step2 = step1.replace(" ( ", " (").replace(" ) ", ") ")
+    step3 = re.sub(r' ([.,:;?!%]+)([ \'"`])', r"\1\2", step2)
+    step4 = re.sub(r' ([.,:;?!%]+)$', r"\1", step3)
+    step5 = step4.replace(" '", "'").replace(" n't", "n't").replace("can not", "cannot")
+    step6 = step5.replace(" ` ", " '")
+    text = step6.strip()
+
+    return text
+
+def acronimList():
+
+    return
+
+def acronimCheck():
+    tweet = "I'ts gr8 and I've h8g  u... ."
+    acronim = 'gr8'
+    tokens = nltk.word_tokenize(tweet)
+    tokenCounter=-1
+    for token in tokens:
+        tokenCounter += 1;
+        if token == acronim:
+            token = 'great'
+        tokens[tokenCounter] = token
+        print token
+
+    tweet = untokenize(tokens)
+
+
+    print tweet
     return tweet
 
-def tokenizer():
-    tweet = ''
-    tokens = nltk.word_tokenize(tweet)
-    return tokens
+acronimCheck()
 
 def grammarCheck(tweet):
 
