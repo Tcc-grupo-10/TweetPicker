@@ -1,13 +1,9 @@
 import language_check
 import nltk
-import string
 import re
 
-import enchant
-import enchant.checker
-from enchant.checker.CmdLineChecker import CmdLineChecker
-
-def spellCheck(tweet):
+#Corrige erros gramaticais
+def grammarCheck(tweet):
     tool = language_check.LanguageTool('en-US')
     matches = tool.check(tweet)
     while (len(matches) != 0):
@@ -18,6 +14,7 @@ def spellCheck(tweet):
             break
     return tweet
 
+#Converte Tokens em uma string.
 def untokenize(tokens):
     #text = "".join([" " + i if not i.startswith("'") and i not in string.punctuation else i for i in tokens]).strip()
 
@@ -29,50 +26,180 @@ def untokenize(tokens):
     step5 = step4.replace(" '", "'").replace(" n't", "n't").replace("can not", "cannot")
     step6 = step5.replace(" ` ", " '")
     text = step6.strip()
-
     return text
 
-def acronimList():
+#Dicionario com alguns acronimos da lingua inglesa.
+def acronymList(token):
+    possibleAcronym = token.upper()
+    dictionary = {
+        '2F4U': "too fast for you",
+        '4YEO': "for your eyes only",
+        'FYE': "for your eyes",
+        'AAMOF': "as a matter of fact",
+        'ACK': "acknowledgment",
+        'AFAIK': "as far as i know",
+        'AFAIR': "as far as i remember",
+        'AFK': "away from keyboard",
+        'AKA': "also known as",
+        'BTK': "back to keyboard",
+        'B2K': "back to keyboard",
+        'BTT': "back to topic",
+        'BTW': "by the way",
+        'B/C': "because",
+        'C&P': "copy and paste",
+        'CU': "see you",
+        'CYS': "check your settings",
+        'DIY': "do it yourself",
+        'EOBD': "end of business day",
+        'EOM': "end of message",
+        'EOT': "end of thread",
+        'FAQ': "frequently asked questions",
+        'FACK': "full acknowledge",
+        'FKA': "formerly known as",
+        'FWIW': "for what it's worth",
+        'FYI ': "for your information",
+        'JFYI': "just for your information",
+        'FTW': "fuck the world",
+        'HF': "have fun",
+        'HTH': "hope this helps",
+        'IDK': "i don't know",
+        'IIRC': "if i recall correctly",
+        'IMHO': "in my humble opinion",
+        'IMO': "in my opinion",
+        'IMNSHO': "in my not so humbleopinion",
+        'IOW': "in other words",
+        'ITT': "in this thread",
+        'LOL': "laughing out loud",
+        'DGMW': "don't get me wrong",
+        'MMW': "mark my words",
+        'N/A': "not available",
+        'NAN': "not a number",
+        'NNTR': "no need to reply",
+        'NOOB ': "newbie",
+        'NOYB': "none of your business",
+        'NRN': "no reply necessary",
+        'OMG': "oh my god",
+        'OP': "original poster, original post",
+        'OT': "off topic",
+        'OTOH': "on the other hand",
+        'PEBKAC': "problem exists between keyboard and chai",
+        'POV': "point of view",
+        'ROTFL': "rolling on the floor laughing",
+        'RTFM': "read the fine manual",
+        'SCNR': "sorry, could not resist",
+        'SFLR': "sorry, for late reply",
+        'SPOC': "single point of contact",
+        'TBA': "to be announced",
+        'TBC': "to be continued",
+        'TIA': "thanks in advance",
+        'TGIF': "thanks god, its friday",
+        'THX': "thanks",
+        'TNX': "thanks",
+        'TQ': "thank you",
+        'TYVM': "thank you very much",
+        'TYT': "take your time",
+        'TTYL': "talk to you later",
+        'WFM': "works for me",
+        'WRT': "with regard to",
+        'WTH': "what the hell",
+        'WTF': "what the fuck",
+        'YMMD': "you made my day",
+        'YMMV': "your mileage may vary",
+        'YAM': "yet another meeting",
+        'ICYMI': "in case you missed it",
+        '2MORO': "tomorrow",
+        '2NTE': "tonight",
+        'AEAP': "as early as possible",
+        'ALAP': "as late as possible",
+        'ASAP': "as soon as possible",
+        'ASL': "age / sex / location",
+        'B3': "blah, blah, blah",
+        'B4YKI': "before you know it",
+        'BFF': "best friends, forever",
+        'BM&Y': "between me and you",
+        'BRB': "be right back",
+        'BRT': "be right there",
+        'BTAM': "be that as it may",
+        'C-P': "sleepy",
+        'CTN': "cannot talk now",
+        'CUS': "see you soon",
+        'CWOT': "complete waste of time",
+        'CYT': "see you tomorrow",
+        'E123': "easy as 1, 2, 3",
+        'EM': "excuse me",
+        'EOD': "end of day",
+        'F2F': "face to face",
+        'FC': "fingers crossed",
+        'FOAF': "friend of a friend",
+        'GR8': "great",
+        'HAK': "hugs and kisses",
+        'IDC': "i don't care",
+        'ILU': "i love you",
+        'ILY': "i love you",
+        'IMU': "i miss you",
+        'IRL': "in real life",
+        'J/K': "just kidding",
+        'JC': "just checking",
+        'JTLYK': "just to let you know",
+        'KFY': "kiss for you",
+        'KMN': "kill me now",
+        'KPC': "keeping parents clueless",
+        'L8R': "later",
+        'MOF': "male or female",
+        'MTFBWY': "may the force be with you",
+        'MYOB': "mind your own business",
+        'N-A-Y-L': "in a while",
+        'NAZ': "name, address, zip",
+        'NC': "no comment",
+        'NIMBY': "not in my backyard",
+        'NM': "never mind",
+        'NP': "no problem",
+        'NSFW': "not safe for work",
+        'NTIM': "not that it matters",
+        'NVM': "never mind",
+        'OATUS': "on a totally unrelated subject",
+        'OIC': "oh, i see",
+        'OMW': "on my way",
+        'OTL': "out to lunch",
+        'OTP': "on the phone",
+        'P911': "parent alert",
+        'PAL': "parents are listening",
+        'PAW': "parents are watching",
+        'PIR': "parent in room",
+        'POS': "parent over shoulder",
+        'PROP': "proper respect",
+        'PROPS': "proper respect",
+        'QT': "cutie",
+        'RN': "right now",
+        'RU': "are you",
+        'SEP': "someone else's problem",
+        'SITD': "still in the dark",
+        'SLAP': "sounds like a plan",
+        'SMIM': "send me an instant message",
+        'SO': "significant other",
+        'TMI': "too much information",
+        'UR': "you are",
+        'W8': "wait",
+        'WB': "welcome back",
+        'WYCM': "will you call me",
+        'WYWH': "wish you were here"
+    }
+    token = dictionary.get(possibleAcronym, token)
+    return token
 
-    return
-
-def acronimCheck():
-    tweet = "I'ts gr8 and I've h8g  u... ."
-    acronim = 'gr8'
+def acronymCheck(tweet):
+    #Separa as palavras do tweet em tokens para analise individual
     tokens = nltk.word_tokenize(tweet)
     tokenCounter=-1
     for token in tokens:
         tokenCounter += 1;
-        if token == acronim:
-            token = 'great'
-        tokens[tokenCounter] = token
-        print token
-
+        tokens[tokenCounter] = acronymList(token)
+    #untokenize() e um metodo criado para converter tokens em uma unica string.
     tweet = untokenize(tokens)
-
-
-    print tweet
-    return tweet
-
-acronimCheck()
-
-def grammarCheck(tweet):
-
-    return tweet
-
-
-def orderCheck(tweet):
-
     return tweet
 
 
 def processTweet(tweet):
-
-    tweet = spellCheck(tweet)
-
+    tweet = acronymCheck(tweet)
     tweet = grammarCheck(tweet)
-
-    tweet = orderCheck(tweet)
-
     return tweet
-
