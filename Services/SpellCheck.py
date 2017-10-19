@@ -1,6 +1,6 @@
 import language_check
-import nltk
 import re
+from nltk.tokenize import WhitespaceTokenizer
 
 #Corrige erros gramaticais
 def grammarCheck(tweet):
@@ -29,9 +29,8 @@ def untokenize(tokens):
     return text
 
 #Dicionario com alguns acronimos da lingua inglesa.
-def acronymList(token):
-    possibleAcronym = token.upper()
-    dictionary = {
+def dictionaryList(token):
+    Dictionary = {
         '2F4U': "too fast for you",
         '4YEO': "for your eyes only",
         'FYE': "for your eyes",
@@ -176,30 +175,46 @@ def acronymList(token):
         'SITD': "still in the dark",
         'SLAP': "sounds like a plan",
         'SMIM': "send me an instant message",
-        'SO': "significant other",
         'TMI': "too much information",
         'UR': "you are",
         'W8': "wait",
         'WB': "welcome back",
         'WYCM': "will you call me",
-        'WYWH': "wish you were here"
+        'WYWH': "wish you were here",
+        "AIN'T": "am not",
+        "AINT": "am not",
+        "GIMME": "give me",
+        "GONNA": "going to",
+        "GOTTA": "got a",
+        "KINDA": "kind of",
+        "LEMME": "let me",
+        "WANNA": "want a",
+        "WHATCHA": "what are you",
+        "YA": "you"
     }
-    token = dictionary.get(possibleAcronym, token)
+    possibleAcronym = token.upper()
+    token = Dictionary.get(possibleAcronym, token)
     return token
 
-def acronymCheck(tweet):
-    #Separa as palavras do tweet em tokens para analise individual
-    tokens = nltk.word_tokenize(tweet)
+def dictonaryCheck(tweet):
+    # TODO-> Adicionar mais versatilidade ao dicionário para palavras junto de símbolos.
+    #Possivel solução para alterar tweets em que o ultimo token precise passar pelo dicionário.
+    if tweet[len(tweet)-1] == '.':
+        tweet.replace(tweet[len(tweet)-1],' .')
+    # Separa as palavras do tweet em tokens para analise individual
+    tokens = WhitespaceTokenizer().tokenize(tweet)
     tokenCounter=-1
     for token in tokens:
         tokenCounter += 1;
-        tokens[tokenCounter] = acronymList(token)
+        tokens[tokenCounter] = dictionaryList(token)
     #untokenize() e um metodo criado para converter tokens em uma unica string.
     tweet = untokenize(tokens)
     return tweet
 
-
 def processTweet(tweet):
-    tweet = acronymCheck(tweet)
+    tweet = dictonaryCheck(tweet)
     tweet = grammarCheck(tweet)
     return tweet
+
+
+
