@@ -1,4 +1,5 @@
 from Databases import Database
+from Services import SpamSet
 
 
 def setAsSpam(tweet_id):
@@ -11,14 +12,19 @@ def setAsSpam(tweet_id):
         ReturnValues="UPDATED_NEW"
     )
 
-def run():
 
+def run():
     allTweets = Database.getAll(Database.rawTweets)
+    spamSet = SpamSet()
 
     for tweet in allTweets:
 
-        # TODO -> How we are going to do that?
-        isSpam = False
+        classifyResult = spamSet.classifyTweet(tweet["clear_text"])
+        isSpam = thisIsSpam(classifyResult)
 
         if isSpam:
             setAsSpam(tweet["tweet_id"])
+
+
+def thisIsSpam(classifyResult):
+    return False
