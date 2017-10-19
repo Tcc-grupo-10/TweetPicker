@@ -27,4 +27,5 @@ def run():
 
 
 def thisIsSpam(classifyResult):
+    print classifyResult
     return False

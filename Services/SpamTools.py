@@ -21,3 +21,4 @@ def getFeatureVector(tweet):
             featureVector.append(w.lower())
 
     return featureVector
+

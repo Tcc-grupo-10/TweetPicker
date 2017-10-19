@@ -38,5 +38,4 @@ class SpamSet(object):
         return nltk.NaiveBayesClassifier.train(training_set)
 
     def classifyTweet(self, tweet):
-        processedTestTweet = SpamTools.processTweet(tweet)
-        print self.nbClassifier.classify(self.extractFeatures(SpamTools.getFeatureVector(processedTestTweet)))
+        return self.nbClassifier.classify(self.extractFeatures(SpamTools.getFeatureVector(tweet)))
