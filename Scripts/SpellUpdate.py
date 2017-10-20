@@ -15,13 +15,11 @@ def spellUpdate(tweet_id, clear_text, untweet_text):
 
 allTweets = Database.getAll(Database.unTweeterizeTable)
 
-print len(allTweets)
-
 for tweet in allTweets:
     tweet["untweet_text"] = tweet["clear_text"]
     tweet["clear_text"] = SpellCheck.processTweet(tweet["untweet_text"])
 
-    print tweet["untweet"]
+    print tweet["untweet_text"]
     print tweet["clear_text"]
     print "\n\n"
 

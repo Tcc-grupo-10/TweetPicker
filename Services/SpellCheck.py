@@ -13,7 +13,7 @@ def grammarCheck(tweet):
         matches = tool.check(tweet)
         if tweet == tweetLog:
             break
-    return tweet
+    return tweet.lower()
 
 
 # Converte Tokens em uma string.
@@ -174,7 +174,6 @@ def dictionaryList(token):
         'RU': "are you",
         'SEP': "someone else's problem",
         'SITD': "still in the dark",
-        'SLAP': "sounds like a plan",
         'SMIM': "send me an instant message",
         'TMI': "too much information",
         'UR': "you are",
@@ -219,7 +218,6 @@ def dictionaryList(token):
         "FWIW": "for what it's worth.",
         "GTS": "guess the song",
         "HAGN": "have a good night",
-        "HAND": "have a nice day",
         "HOTD": "headline of the day",
         "HT": "heard through",
         "HTH": "hope that helps",
@@ -295,6 +293,7 @@ def dictonaryCheck(tweet):
         tokens[tokenCounter] = dictionaryList(token)
     # untokenize() e um metodo criado para converter tokens em uma unica string.
     tweet = untokenize(tokens)
+    tweet
     return tweet
 
 
