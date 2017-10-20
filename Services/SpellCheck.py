@@ -1,6 +1,6 @@
 import language_check
 import re
-from nltk.tokenize import WhitespaceTokenizer
+from nltk.tokenize import TweetTokenizer
 
 #Corrige erros gramaticais
 def grammarCheck(tweet):
@@ -16,8 +16,6 @@ def grammarCheck(tweet):
 
 #Converte Tokens em uma string.
 def untokenize(tokens):
-    #text = "".join([" " + i if not i.startswith("'") and i not in string.punctuation else i for i in tokens]).strip()
-
     text = ' '.join(tokens)
     step1 = text.replace("`` ", '"').replace(" ''", '"').replace('. . .', '...')
     step2 = step1.replace(" ( ", " (").replace(" ) ", ") ")
@@ -44,8 +42,8 @@ def dictionaryList(token):
         'B2K': "back to keyboard",
         'BTT': "back to topic",
         'BTW': "by the way",
-        'B/C': "because",
-        'C&P': "copy and paste",
+        'BC': "because",
+        'CP': "copy and paste",
         'CU': "see you",
         'CYS': "check your settings",
         'DIY': "do it yourself",
@@ -71,7 +69,7 @@ def dictionaryList(token):
         'LOL': "laughing out loud",
         'DGMW': "don't get me wrong",
         'MMW': "mark my words",
-        'N/A': "not available",
+        'NA': "not available",
         'NAN': "not a number",
         'NNTR': "no need to reply",
         'NOOB ': "newbie",
@@ -115,7 +113,7 @@ def dictionaryList(token):
         'B3': "blah, blah, blah",
         'B4YKI': "before you know it",
         'BFF': "best friends, forever",
-        'BM&Y': "between me and you",
+        'BMY': "between me and you",
         'BRB': "be right back",
         'BRT': "be right there",
         'BTAM': "be that as it may",
@@ -137,7 +135,7 @@ def dictionaryList(token):
         'ILY': "i love you",
         'IMU': "i miss you",
         'IRL': "in real life",
-        'J/K': "just kidding",
+        'JK': "just kidding",
         'JC': "just checking",
         'JTLYK': "just to let you know",
         'KFY': "kiss for you",
@@ -190,19 +188,106 @@ def dictionaryList(token):
         "LEMME": "let me",
         "WANNA": "want a",
         "WHATCHA": "what are you",
-        "YA": "you"
+        "YA": "you",
+        "AB": "about",
+        "ABT": "about",
+        "AFAIK": "as far as i know",
+        "B4": "before",
+        "BFN": "bye for now",
+        "BGD": "background",
+        "BH": "blockhead",
+        "BR": "best regards",
+        "BTW": "by the way",
+        "CHK": "check",
+        "CUL8R": "see you later",
+        "DAM": "don't annoy me",
+        "DD": "dear daughter",
+        "DS": "dear son",
+        "DYK": "did you know, do you know",
+        "EM/EML": "email",
+        "EMA": "email address",
+        "F2F": "face to face",
+        "FTF": "face to face",
+        "FB": "facebook",
+        "FF": "follow friday",
+        "FML": "fuck my life",
+        "FOTD": "find of the day",
+        "FTW": "for the win",
+        "FWIW": "for what it's worth.",
+        "GTS": "guess the song",
+        "HAGN": "have a good night",
+        "HAND": "have a nice day",
+        "HOTD": "headline of the day",
+        "HT": "heard through",
+        "HTH": "hope that helps",
+        "IC": "i see",
+        "ICYMI": "in case you missed it",
+        "IDK": "i don't know",
+        "IIRC": "if i remember correctly",
+        "IMHO": "in my humble opinion.",
+        "IRL": "in real life",
+        "IWSN": "i want sex now",
+        "JK": "just kidding, joke",
+        "JSYK": "just so you know",
+        "JV": "joint venture",
+        "KK": "kewl kewl, or ok, got it",
+        "KYSO": "knock your socks off",
+        "LHH": "laugh hella hard",
+        "LMAO": "laughing my ass off",
+        "LMK": "let me know",
+        "LO": "little one",
+        "LOL": "laugh out loud",
+        "MM": "music monday",
+        "MIRL": "meet in real life",
+        "MRJN": "marijuana",
+        "NBD": "no big deal",
+        "NCT": "nobody cares, though",
+        "NJOY": "enjoy",
+        "NSFW": "not safe for work",
+        "NTS": "note to self",
+        "OH": "overheard",
+        "OOMF": "one of my friends/followers",
+        "ORLY": "oh, really",
+        "PLMK": "please let me know",
+        "QOTD": "quote of the day",
+        "RE": "in reply to, in regards to",
+        "RTQ": "read the question",
+        "SFW": "safe for work",
+        "SMDH": "shaking my damn head, smh, only more so",
+        "SMH": "shaking my head",
+        "SO": "significant other",
+        "SRS": "serious",
+        "TFTF": "thanks for the follow",
+        "TFTT": "thanks for this tweet",
+        "TJ": "tweetjack, or joining a conversation belatedly to contribute to a tangent",
+        "TL": "timeline",
+        "TLDR": "too long, didn't read",
+        "TMB": "tweet me back",
+        "TT": "trending topic",
+        "TY": "thank you",
+        "TYIA": "thank you in advance",
+        "TYT": "take your time",
+        "TYVW": "thank you very much",
+        "W": "with",
+        "WE": "whatever or weekend",
+        "WTV": "whatever",
+        "YGTR": "you got that right",
+        "YKWIM": "you know what i mean",
+        "YKYAT": "you know you're addicted to",
+        "YMMV": "your mileage may vary",
+        "YOLO": "you only live once",
+        "YOYO": "you're on your own",
+        "YW": "you're welcome",
+        "ZOMG": "omg to the max"
     }
     possibleAcronym = token.upper()
     token = Dictionary.get(possibleAcronym, token)
     return token
 
 def dictonaryCheck(tweet):
-    # TODO-> Adicionar mais versatilidade ao dicionário para palavras junto de símbolos.
-    #Possivel solução para alterar tweets em que o ultimo token precise passar pelo dicionário.
-    if tweet[len(tweet)-1] == '.':
-        tweet.replace(tweet[len(tweet)-1],' .')
+    # TODO-> Adicionar mais versatilidade ao dicionario para palavras junto de simbolos.
     # Separa as palavras do tweet em tokens para analise individual
-    tokens = WhitespaceTokenizer().tokenize(tweet)
+    tokens = TweetTokenizer().tokenize(tweet)
     tokenCounter=-1
     for token in tokens:
         tokenCounter += 1;
@@ -215,6 +300,3 @@ def processTweet(tweet):
     tweet = dictonaryCheck(tweet)
     tweet = grammarCheck(tweet)
     return tweet
-
-
-
