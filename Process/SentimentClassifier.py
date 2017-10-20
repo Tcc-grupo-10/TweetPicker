@@ -3,12 +3,12 @@
 from nltk.tokenize import TweetTokenizer
 from nltk import pos_tag
 
-def run():
+def run(allTweets):
 
    # sentiments = [{"happy": 0.5}, {"sad": 0.01}]
 
 #    allTweets = Database.getAll(Database.rawTweets)
-    allTweets ={"I am going to the market to buy vegetables and some fruits","sad sad"}
+    allTweets = {"I am going to the market to buy vegetables and some fruits", "sad sad"}
     tknzr = TweetTokenizer()
     for tweet in allTweets:
         # TODO -> JUST DO IT! MAKE THOSE SENTIMENT COME TRUE!

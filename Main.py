@@ -8,8 +8,10 @@ from Services import TwitterIntegration
 # SearchHotkeys
 rawKey = "WinterIsHere"
 
-if not rawKey.startswith("#"):
-    rawKey = "#" + rawKey
+if " " not in rawKey:
+    if not rawKey.startswith("#"):
+        rawKey = "#" + rawKey
+
 searchEncoded = urllib.quote(rawKey)
 
 rawId = rawKey + "|" + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "|{}".format(randint(0, 100))
@@ -20,14 +22,13 @@ tokenUserless = TwitterIntegration.getTokenUserless()
 
 # Get and Process Tweets
 numberOfTweets = 50
-gotThemAll = TweetPicker.getTweets(tokenUserless, rawKey, numberOfTweets, searchEncoded, runId)
-# TODO -> Wait this get done (check if the return True worked)
+allTweets = TweetPicker.getTweets(tokenUserless, rawKey, numberOfTweets, searchEncoded, runId)
 
-PreProcessing.run()
+allTweets = PreProcessing.run(allTweets)
 
-SpamFiltering.run()
+allTweets = SpamFiltering.run(allTweets)
 
-sentiments = SentimentClassifier.run()
+sentiments = SentimentClassifier.run(allTweets)
 
 # TODO -> How we should display this? (Current: JSON)
 print sentiments

@@ -2,7 +2,7 @@ from Databases import Database
 from Services import TwitterIntegration
 
 
-def saveNext(searchRaw, rawKey, runId):
+def save(searchRaw, rawKey, runId):
 
     statuses = searchRaw.get("statuses", [])
 
@@ -24,20 +24,24 @@ def saveNext(searchRaw, rawKey, runId):
 
             Database.insertItem(item, Database.rawTweets)
 
-    return searchRaw.get("search_metadata", {}).get("next_results", "")
+    return statuses
 
 
 def getTweets(tokenUserless, rawKey, tweetAmount, searchEncoded, runId):
+    items = []
+
     times = tweetAmount / 100 + 1
 
     searchRaw = TwitterIntegration.getSearch(searchEncoded, tokenUserless)
-    nextUrl = saveNext(searchRaw, rawKey, runId)
+    items.append(save(searchRaw, rawKey, runId))
+    nextUrl = searchRaw.get("search_metadata", {}).get("next_results", "")
 
     for x in range(0, times):
         searchRaw = TwitterIntegration.getNextSearch(nextUrl, tokenUserless)
-        nextUrl = saveNext(searchRaw, rawKey, runId)
+        items.append(save(searchRaw, rawKey, runId))
+        nextUrl = searchRaw.get("search_metadata", {}).get("next_results", "")
 
-    return True
+    return items
 
 
 """def waitTime(minutes):

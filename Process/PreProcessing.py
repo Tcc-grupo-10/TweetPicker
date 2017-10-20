@@ -2,9 +2,7 @@ from Services import TweetCleaner, SpellCheck
 from Databases import Database
 
 
-def run():
-
-    allTweets = Database.getAll(Database.rawTweets)
+def run(allTweets):
 
     for tweet in allTweets:
         cleanTweet = TweetCleaner.processTweet(tweet["text"])
@@ -14,3 +12,5 @@ def run():
         tweet["raw_tweet"] = False
         tweet["preprocessed_tweet"] = True
         Database.updateItem(tweet, Database.rawTweets)
+
+    return allTweets

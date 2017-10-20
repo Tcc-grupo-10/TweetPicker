@@ -13,8 +13,7 @@ def setAsSpam(tweet_id):
     )
 
 
-def run():
-    allTweets = Database.getAll(Database.rawTweets)
+def run(allTweets):
     spamSet = SpamSet()
 
     for tweet in allTweets:
@@ -24,6 +23,9 @@ def run():
 
         if isSpam:
             setAsSpam(tweet["tweet_id"])
+
+    # TODO -> Atualizar para filtrar os com spam
+    return allTweets
 
 
 def thisIsSpam(classifyResult):
