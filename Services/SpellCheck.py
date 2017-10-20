@@ -2,11 +2,12 @@ import language_check
 import re
 from nltk.tokenize import TweetTokenizer
 
-#Corrige erros gramaticais
+
+# Corrige erros gramaticais
 def grammarCheck(tweet):
     tool = language_check.LanguageTool('en-US')
     matches = tool.check(tweet)
-    while (len(matches) != 0):
+    while len(matches) != 0:
         tweetLog = tweet
         tweet = language_check.correct(tweet, matches)
         matches = tool.check(tweet)
@@ -14,7 +15,8 @@ def grammarCheck(tweet):
             break
     return tweet
 
-#Converte Tokens em uma string.
+
+# Converte Tokens em uma string.
 def untokenize(tokens):
     text = ' '.join(tokens)
     step1 = text.replace("`` ", '"').replace(" ''", '"').replace('. . .', '...')
@@ -26,7 +28,8 @@ def untokenize(tokens):
     text = step6.strip()
     return text
 
-#Dicionario com alguns acronimos da lingua inglesa.
+
+# Dicionario com alguns acronimos da lingua inglesa.
 def dictionaryList(token):
     Dictionary = {
         '2F4U': "too fast for you",
@@ -245,7 +248,6 @@ def dictionaryList(token):
         "NJOY": "enjoy",
         "NSFW": "not safe for work",
         "NTS": "note to self",
-        "OH": "overheard",
         "OOMF": "one of my friends/followers",
         "ORLY": "oh, really",
         "PLMK": "please let me know",
@@ -255,7 +257,6 @@ def dictionaryList(token):
         "SFW": "safe for work",
         "SMDH": "shaking my damn head, smh, only more so",
         "SMH": "shaking my head",
-        "SO": "significant other",
         "SRS": "serious",
         "TFTF": "thanks for the follow",
         "TFTT": "thanks for this tweet",
@@ -269,7 +270,6 @@ def dictionaryList(token):
         "TYT": "take your time",
         "TYVW": "thank you very much",
         "W": "with",
-        "WE": "whatever or weekend",
         "WTV": "whatever",
         "YGTR": "you got that right",
         "YKWIM": "you know what i mean",
@@ -284,17 +284,19 @@ def dictionaryList(token):
     token = Dictionary.get(possibleAcronym, token)
     return token
 
+
 def dictonaryCheck(tweet):
     # TODO-> Adicionar mais versatilidade ao dicionario para palavras junto de simbolos.
     # Separa as palavras do tweet em tokens para analise individual
     tokens = TweetTokenizer().tokenize(tweet)
     tokenCounter=-1
     for token in tokens:
-        tokenCounter += 1;
+        tokenCounter += 1
         tokens[tokenCounter] = dictionaryList(token)
-    #untokenize() e um metodo criado para converter tokens em uma unica string.
+    # untokenize() e um metodo criado para converter tokens em uma unica string.
     tweet = untokenize(tokens)
     return tweet
+
 
 def processTweet(tweet):
     tweet = dictonaryCheck(tweet)
