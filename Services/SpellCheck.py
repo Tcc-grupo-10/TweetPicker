@@ -19,11 +19,9 @@ def untokenize(tokens):
 """
 # Corrige erros gramaticais
 def azureSpellCheck(tweet):
-    tokens = TweetTokenizer().tokenize(tweet)
-
     params = {'mkt': 'en-US', 'mode': 'spell', 'text': tweet}
     # NOTE: Replace this example key with a valid subscription key.
-    key = 'cae805e9083644c88baac17a413f802c'
+    key = 'KEY_HERE'
     host = 'api.cognitive.microsoft.com'
     path = '/bing/v7.0/spellcheck'
     headers = {'Ocp-Apim-Subscription-Key': key,
@@ -263,7 +261,6 @@ def dictionaryList(tweet):
         "ORLY": "oh, really",
         "PLMK": "please let me know",
         "QOTD": "quote of the day",
-        "RE": "in reply to, in regards to",
         "RTQ": "read the question",
         "SFW": "safe for work",
         "SMDH": "shaking my damn head, smh, only more so",
@@ -280,7 +277,6 @@ def dictionaryList(tweet):
         "TYIA": "thank you in advance",
         "TYT": "take your time",
         "TYVW": "thank you very much",
-        "W": "with",
         "WTV": "whatever",
         "YGTR": "you got that right",
         "YKWIM": "you know what i mean",
@@ -288,8 +284,7 @@ def dictionaryList(tweet):
         "YMMV": "your mileage may vary",
         "YOLO": "you only live once",
         "YOYO": "you're on your own",
-        "YW": "you're welcome",
-        "ZOMG": "omg to the max"
+        "YW": "you're welcome"
     }
     possibleAcronym = tweet.upper()
     pattern = re.compile(r'\b(' + '|'.join(dictionary.keys()) + r')\b')
@@ -301,11 +296,3 @@ def processTweet(tweet):
     tweet = azureSpellCheck(tweet)
     print(tweet)
     return tweet
-
-
-
-
-
-processTweet(u"givme a letter your Bronn lets gu!")
-processTweet(u"hey bronn, can i helo u?")
-processTweet(u"cercei, a real queen knows how to make an entrance :face_with_tears_of_joy: gots7")
