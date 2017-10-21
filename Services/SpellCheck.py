@@ -1,11 +1,13 @@
 import language_check
 import re
 from nltk.tokenize import TweetTokenizer
-
+import http.client
+import urllib.parse
+import json
 
 # Corrige erros gramaticais
 def grammarCheck(tweet):
-    tool = language_check.LanguageTool('en-US')
+    """tool = language_check.LanguageTool('en-US')
     matches = tool.check(tweet)
     while len(matches) != 0:
         tweetLog = tweet
@@ -13,7 +15,35 @@ def grammarCheck(tweet):
         matches = tool.check(tweet)
         if tweet == tweetLog:
             break
-    return tweet.lower()
+    return tweet.lower()"""
+
+    text = tweet
+
+    params = {'mkt': 'en-US', 'mode': 'proof', 'text': text}
+
+        # NOTE: Replace this example key with a valid subscription key.
+    key = 'cae805e9083644c88baac17a413f802c'
+
+    host = 'api.cognitive.microsoft.com'
+    path = '/bing/v7.0/spellcheck'
+
+    headers = {'Ocp-Apim-Subscription-Key': key,
+                   'Content-Type': 'application/x-www-form-urlencoded'}
+
+        # The headers in the following example
+        # are optional but should be considered as required:
+        #
+        # X-MSEdge-ClientIP: 999.999.999.999
+        # X-Search-Location: lat: +90.0000000000000;long: 00.0000000000000;re:100.000000000000
+        # X-MSEdge-ClientID: <Client ID from Previous Response Goes Here>
+
+    conn = http.client.HTTPSConnection(host)
+    params = urllib.parse.urlencode(params)
+    conn.request("POST", path, params, headers)
+    response = conn.getresponse()
+    print (response.read())
+    return response.read()
+
 
 
 # Converte Tokens em uma string.
@@ -301,3 +331,5 @@ def processTweet(tweet):
     tweet = dictonaryCheck(tweet)
     tweet = grammarCheck(tweet)
     return tweet
+
+processTweet(u"hell my oud friend :smile:!")
