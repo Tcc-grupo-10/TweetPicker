@@ -74,3 +74,9 @@ def createSet():
 
 
 createSet()
+
+
+"""def extractFeatureList(text, n_gram, stop_words ):
+    text :
+
+def processFeatureList(featureList, n_gram = 1, stop_words = True, frequency = 1  ):"""

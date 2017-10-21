@@ -7,7 +7,7 @@ def replaceTwoOrMore(s):
     return pattern.sub(r"\1\1", s)
 
 
-def getFeatureVector(tweet):
+def getFeatureVector(tweet, nGram = 1, stopwords = False):
     featureVector = []
     words = tweet.split()
     for w in words:
