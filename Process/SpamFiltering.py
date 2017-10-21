@@ -29,5 +29,5 @@ def run(allTweets):
 
 
 def thisIsSpam(classifyResult):
-    print classifyResult
+    print (classifyResult)
     return False

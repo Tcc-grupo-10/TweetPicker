@@ -31,4 +31,4 @@ allTweets = SpamFiltering.run(allTweets)
 sentiments = SentimentClassifier.run(allTweets)
 
 # TODO -> How we should display this? (Current: JSON)
-print sentiments
+print (sentiments)

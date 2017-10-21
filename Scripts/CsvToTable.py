@@ -30,7 +30,7 @@ with open('test.csv', 'rb') as f:
         if row["IRRELEVANTE"].strip() == 'x':
             irrelevante = True
 
-        print "id: {} - s: {} | i: {}".format(tweet_id, spam, irrelevante)
+        print ("id: {} - s: {} | i: {}".format(tweet_id, spam, irrelevante))
         csvData.append((tweet_id, spam, irrelevante))
 
 

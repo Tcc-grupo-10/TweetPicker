@@ -1,67 +1,50 @@
-import language_check
 import re
 from nltk.tokenize import TweetTokenizer
 import http.client
 import urllib.parse
 import json
 
-# Corrige erros gramaticais
-def grammarCheck(tweet):
-    """tool = language_check.LanguageTool('en-US')
-    matches = tool.check(tweet)
-    while len(matches) != 0:
-        tweetLog = tweet
-        tweet = language_check.correct(tweet, matches)
-        matches = tool.check(tweet)
-        if tweet == tweetLog:
-            break
-    return tweet.lower()"""
-
-    text = tweet
-
-    params = {'mkt': 'en-US', 'mode': 'proof', 'text': text}
-
-        # NOTE: Replace this example key with a valid subscription key.
-    key = 'cae805e9083644c88baac17a413f802c'
-
-    host = 'api.cognitive.microsoft.com'
-    path = '/bing/v7.0/spellcheck'
-
-    headers = {'Ocp-Apim-Subscription-Key': key,
-                   'Content-Type': 'application/x-www-form-urlencoded'}
-
-        # The headers in the following example
-        # are optional but should be considered as required:
-        #
-        # X-MSEdge-ClientIP: 999.999.999.999
-        # X-Search-Location: lat: +90.0000000000000;long: 00.0000000000000;re:100.000000000000
-        # X-MSEdge-ClientID: <Client ID from Previous Response Goes Here>
-
-    conn = http.client.HTTPSConnection(host)
-    params = urllib.parse.urlencode(params)
-    conn.request("POST", path, params, headers)
-    response = conn.getresponse()
-    print (response.read())
-    return response.read()
-
-
-
+"""
 # Converte Tokens em uma string.
 def untokenize(tokens):
     text = ' '.join(tokens)
     step1 = text.replace("`` ", '"').replace(" ''", '"').replace('. . .', '...')
     step2 = step1.replace(" ( ", " (").replace(" ) ", ") ")
     step3 = re.sub(r' ([.,:;?!%]+)([ \'"`])', r"\1\2", step2)
-    step4 = re.sub(r' ([.,:;?!%]+)$', r"\1", step3)
+    step4 = re.sub(r' ([.,:];?!%]+)$', r"\1", step3)
     step5 = step4.replace(" '", "'").replace(" n't", "n't").replace("can not", "cannot")
     step6 = step5.replace(" ` ", " '")
     text = step6.strip()
     return text
+"""
+# Corrige erros gramaticais
+def azureSpellCheck(tweet):
+    tokens = TweetTokenizer().tokenize(tweet)
+
+    params = {'mkt': 'en-US', 'mode': 'spell', 'text': tweet}
+    # NOTE: Replace this example key with a valid subscription key.
+    key = 'cae805e9083644c88baac17a413f802c'
+    host = 'api.cognitive.microsoft.com'
+    path = '/bing/v7.0/spellcheck'
+    headers = {'Ocp-Apim-Subscription-Key': key,
+               'Content-Type': 'application/x-www-form-urlencoded'}
+    conn = http.client.HTTPSConnection(host)
+    params = urllib.parse.urlencode(params)
+    conn.request("POST", path, params, headers)
+    response = conn.getresponse()
+    suggestions = json.loads(response.read())
+    for indexSugg, suggestion in enumerate(suggestions["flaggedTokens"]):
+        suggestion["suggestions"][0]["suggestion"]
+        if suggestion["token"] in tweet:
+            tweet = tweet.replace(suggestion["token"], suggestion["suggestions"][0]["suggestion"])
+    return tweet
+
+
 
 
 # Dicionario com alguns acronimos da lingua inglesa.
-def dictionaryList(token):
-    Dictionary = {
+def dictionaryList(tweet):
+    dictionary = {
         '2F4U': "too fast for you",
         '4YEO': "for your eyes only",
         'FYE': "for your eyes",
@@ -308,28 +291,21 @@ def dictionaryList(token):
         "YW": "you're welcome",
         "ZOMG": "omg to the max"
     }
-    possibleAcronym = token.upper()
-    token = Dictionary.get(possibleAcronym, token)
-    return token
-
-
-def dictonaryCheck(tweet):
-    # TODO-> Adicionar mais versatilidade ao dicionario para palavras junto de simbolos.
-    # Separa as palavras do tweet em tokens para analise individual
-    tokens = TweetTokenizer().tokenize(tweet)
-    tokenCounter=-1
-    for token in tokens:
-        tokenCounter += 1
-        tokens[tokenCounter] = dictionaryList(token)
-    # untokenize() e um metodo criado para converter tokens em uma unica string.
-    tweet = untokenize(tokens)
-    tweet
+    possibleAcronym = tweet.upper()
+    pattern = re.compile(r'\b(' + '|'.join(dictionary.keys()) + r')\b')
+    tweet = pattern.sub(lambda x: dictionary[x.group()], possibleAcronym).lower()
     return tweet
-
 
 def processTweet(tweet):
-    tweet = dictonaryCheck(tweet)
-    tweet = grammarCheck(tweet)
+    tweet = dictionaryList(tweet)
+    tweet = azureSpellCheck(tweet)
+    print(tweet)
     return tweet
 
-processTweet(u"hell my oud friend :smile:!")
+
+
+
+
+processTweet(u"givme a letter your Bronn lets gu!")
+processTweet(u"hey bronn, can i helo u?")
+processTweet(u"cercei, a real queen knows how to make an entrance :face_with_tears_of_joy: gots7")

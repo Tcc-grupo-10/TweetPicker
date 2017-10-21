@@ -19,9 +19,9 @@ for tweet in allTweets:
     tweet["untweet_text"] = tweet["clear_text"]
     tweet["clear_text"] = SpellCheck.processTweet(tweet["untweet_text"])
 
-    print tweet["untweet_text"]
-    print tweet["clear_text"]
-    print "\n\n"
+    print (tweet["untweet_text"])
+    print (tweet["clear_text"])
+    print ("\n\n")
 
     # TODO -> JUST UNCOMMENT AFTER THE TESTS
     # spellUpdate(tweet["tweet_id"], tweet["clear_text"], tweet["untweet_text"])

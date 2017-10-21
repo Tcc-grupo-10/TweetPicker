@@ -34,7 +34,7 @@ def getSearch(searchEncoded, bearerToken):
 
 def getNextSearch(nextUrl, bearerToken):
     url = 'https://api.twitter.com/1.1/search/tweets.json'+nextUrl
-    print (url)
+    print ((url))
     req = urllib.Request(url)
     req.add_header('Authorization', bearerToken)
     response = urllib.urlopen(req).read()

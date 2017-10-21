@@ -16,12 +16,12 @@ destinyTable = dynamodb.Table('tweets15')
 response = sourceTable.scan()
 allTweets = response['Items']
 
-print len(allTweets)
+print (len(allTweets))
 
 while 'LastEvaluatedKey' in response:
     response = sourceTable.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
     allTweets.extend(response['Items'])
-    print len(allTweets)
+    print (len(allTweets))
 
 
 for i in allTweets:
@@ -29,4 +29,4 @@ for i in allTweets:
         destinyTable.put_item(Item=i)
         print(i)
     except Exception as e:
-        print "I/O error({0}): {1}".format(e.errno, e.strerror)
+        print ("I/O error({0}): {1}".format(e.errno, e.strerror))
