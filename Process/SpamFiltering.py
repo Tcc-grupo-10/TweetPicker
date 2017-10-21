@@ -21,8 +21,8 @@ def run(allTweets):
         classifyResult = spamSet.classifyTweet(tweet["clear_text"])
         isSpam = thisIsSpam(classifyResult)
 
-        if isSpam:
-            setAsSpam(tweet["tweet_id"])
+        """if isSpam:
+            setAsSpam(tweet["tweet_id"])"""
 
     # TODO -> Atualizar para filtrar os com spam
     return allTweets
