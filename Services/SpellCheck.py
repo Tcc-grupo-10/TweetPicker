@@ -164,7 +164,6 @@ def dictionaryList(token):
         'OTP': "on the phone",
         'P911': "parent alert",
         'PAL': "parents are listening",
-        'PAW': "parents are watching",
         'PIR': "parent in room",
         'POS': "parent over shoulder",
         'PROP': "proper respect",
