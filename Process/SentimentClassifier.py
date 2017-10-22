@@ -1,26 +1,29 @@
 #from Databases import Database
-#from Services import WordClassifier
-from nltk.tokenize import TweetTokenizer
-from nltk import pos_tag
 from nltk.tag.stanford import StanfordPOSTagger
 import os
+from nltk.stem import WordNetLemmatizer
 
 
-def run():
+
+def run(allTweets):
     java_path = "C:\ProgrA~1\Java\jdk1.8.0_151"
     os.environ['JAVAHOME'] = java_path
-   # sentiments = [{"happy": 0.5}, {"sad": 0.01}]
+
 
     #allTweets = Database.getAll(Database.rawTweets)
-    allTweets = "I am going to the market to buy vegetables and some fruits"
 
-
+    #TODO -> Identificar emoji em tweets(tokens que começam e terminam com ':' e tem mais de uma posicao)
     st = StanfordPOSTagger('C:\Progra~1\stanford-postagger\models\english-bidirectional-distsim.tagger','C:\Progra~1\stanford-postagger\stanford-postagger.jar')
-    print(st.tag(allTweets.split()))
-    
+    lemmatizer = WordNetLemmatizer()
+    for tweet in allTweets:
+        tweet = st.tag(tweet.split())
+        for word in tweet:
+            tweetLemmatized = lemmatizer.lemmatize(word[0])
+
+
+
 
 
 
     #return sentiments
 
-run()
