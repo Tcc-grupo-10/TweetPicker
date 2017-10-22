@@ -23,5 +23,4 @@ for tweet in allTweets:
     print tweet["clear_text"]
     print "\n\n"
 
-    # TODO -> JUST UNCOMMENT AFTER THE TESTS
-    # spellUpdate(tweet["tweet_id"], tweet["clear_text"], tweet["untweet_text"])
+    spellUpdate(tweet["tweet_id"], tweet["clear_text"], tweet["untweet_text"])

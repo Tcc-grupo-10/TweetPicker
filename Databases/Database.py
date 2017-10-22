@@ -42,10 +42,10 @@ def getAll(table):
     allTweets = response['Items']
     print len(allTweets)
 
-    """while 'LastEvaluatedKey' in response:
+    while 'LastEvaluatedKey' in response:
         response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
         allTweets.extend(response['Items'])
-        print len(allTweets)"""
+        print len(allTweets)
 
     return allTweets
 
