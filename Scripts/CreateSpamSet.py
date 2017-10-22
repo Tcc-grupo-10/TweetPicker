@@ -21,6 +21,7 @@ class CreateSpamSet(object):
     def createSet(self):
 
         allTweets = Database.getAll(Database.unTweeterizeTable)
+        # TODO -> filter only "is_training" objects
         tweets = []
 
         for tweet in allTweets:
@@ -38,9 +39,6 @@ class CreateSpamSet(object):
 
         f = open('../Etc/trainingTest.csv', 'w')
         for a in training_set:
-            # print(str(a))
-            # print(str(a).encode('utf-8'))
-            # wr.writerow([account_id, objective])
             f.write(str(a))
             f.write("\n")
 

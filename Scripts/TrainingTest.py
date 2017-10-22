@@ -40,7 +40,7 @@ for obj in geten:
     testData.append({"clear_text": obj[0], "is_spam": spam})
 
 
-# print(testData)
+print(testData)
 
 
 
@@ -51,7 +51,7 @@ def createSet():
 
 
     def extractFeatures(tweet):
-        tweet_words = set(tweet[0])
+        tweet_words = set(tweet)
         features = {}
         for word in featureList:
             features['contains(%s)' % word] = (word in tweet_words)
@@ -61,7 +61,7 @@ def createSet():
     for tweet in allTweets:
         sentiment = tweet['is_spam']
         tweet = tweet['clear_text']
-        featureVector = SpamTools.getFeatureVector(tweet)
+        featureVector = SpamTools.getFeatureVector(tweet, 3, [])
         featureList.extend(featureVector)
         tweets.append((featureVector, sentiment))
 
@@ -72,25 +72,24 @@ def createSet():
 
     f = open('../Etc/trainingTest.csv', 'w')
     for a in training_set:
-        # print(str(a))
-        # print(str(a).encode('utf-8'))
-        # wr.writerow([account_id, objective])
         f.write(str(a))
         f.write("\n")
 
     qwe = []
 
     o = open('../Etc/trainingTest.csv', 'r')
-    li = o.readline()
     for line in o:
         qwe.append(ast.literal_eval(line))
+        print(line)
 
 
 
     # Train the classifier
+
+    # print(qwe)
     train = nltk.NaiveBayesClassifier.train(qwe)
 
-    aaa = train.classify(extractFeatures(SpamTools.getFeatureVector("gameofthrones best show ever")))
+    aaa = train.classify(extractFeatures(SpamTools.getFeatureVector("legit twitter and instagram", 3)))
 
     print("\n\nresult: {}\n\n".format(aaa))
 
