@@ -2,18 +2,24 @@
 #from Services import WordClassifier
 from nltk.tokenize import TweetTokenizer
 from nltk import pos_tag
+from nltk.tag.stanford import StanfordPOSTagger
+import os
 
-def run(allTweets):
 
+def run():
+    java_path = "C:\ProgrA~1\Java\jdk1.8.0_151"
+    os.environ['JAVAHOME'] = java_path
    # sentiments = [{"happy": 0.5}, {"sad": 0.01}]
 
-#    allTweets = Database.getAll(Database.rawTweets)
-    allTweets = {"I am going to the market to buy vegetables and some fruits", "sad sad"}
-    tknzr = TweetTokenizer()
-    for tweet in allTweets:
-        # TODO -> JUST DO IT! MAKE THOSE SENTIMENT COME TRUE!
-        tokens = pos_tag(tknzr.tokenize(tweet))
-        print (tokens)
+    #allTweets = Database.getAll(Database.rawTweets)
+    allTweets = "I am going to the market to buy vegetables and some fruits"
+
+
+    st = StanfordPOSTagger('C:\Progra~1\stanford-postagger\models\english-bidirectional-distsim.tagger','C:\Progra~1\stanford-postagger\stanford-postagger.jar')
+    print(st.tag(allTweets.split()))
+    
+
+
 
     #return sentiments
 
