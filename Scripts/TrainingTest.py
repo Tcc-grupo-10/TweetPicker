@@ -1,14 +1,17 @@
 import csv
 import nltk as nltk
 from Services import SpamTools
+import ast
 
 csvData = []
 i = 0
 
 testData = []
 
-with open('../Etc/test2.csv', 'rb') as f:
+with open('../Etc/test2.csv', 'rt', encoding="utf8") as f:
     reader = csv.DictReader(f)
+    # csv.reader
+
 
     for row in reader:
         tweet_id = row["tweet_id"].strip()
@@ -37,21 +40,23 @@ for obj in geten:
     testData.append({"clear_text": obj[0], "is_spam": spam})
 
 
-print testData
+# print(testData)
 
-
-def extractFeatures(tweet):
-    tweet_words = set(tweet[0])
-    features = {}
-    for word in tweet[1]:
-        features['contains(%s)' % word] = (word in tweet_words)
-    return features
 
 
 def createSet():
     allTweets = testData
     tweets = []
     featureList = []
+
+
+    def extractFeatures(tweet):
+        tweet_words = set(tweet[0])
+        features = {}
+        for word in featureList:
+            features['contains(%s)' % word] = (word in tweet_words)
+        return features
+
 
     for tweet in allTweets:
         sentiment = tweet['is_spam']
@@ -65,12 +70,29 @@ def createSet():
     # Extract feature vector for all tweets in one shote
     training_set = nltk.classify.util.apply_features(extractFeatures, tweets)
 
+    f = open('../Etc/trainingTest.csv', 'w')
+    for a in training_set:
+        # print(str(a))
+        # print(str(a).encode('utf-8'))
+        # wr.writerow([account_id, objective])
+        f.write(str(a))
+        f.write("\n")
+
+    qwe = []
+
+    o = open('../Etc/trainingTest.csv', 'r')
+    li = o.readline()
+    for line in o:
+        qwe.append(ast.literal_eval(line))
+
+
+
     # Train the classifier
-    train = nltk.NaiveBayesClassifier.train(training_set)
+    train = nltk.NaiveBayesClassifier.train(qwe)
 
-    aaa = train.classify(extractFeatures(SpamTools.getFeatureVector("annister army gameofthronesfinale gameofthrones")))
+    aaa = train.classify(extractFeatures(SpamTools.getFeatureVector("gameofthrones best show ever")))
 
-    print "result: {}".format(aaa)
+    print("\n\nresult: {}\n\n".format(aaa))
 
 
 createSet()
