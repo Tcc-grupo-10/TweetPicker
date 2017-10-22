@@ -1,6 +1,6 @@
 import nltk as nltk
-from Databases import Database
 from Services import SpamTools
+import ast
 
 
 class SpamSet(object):
@@ -18,21 +18,10 @@ class SpamSet(object):
 
     def createSet(self):
 
-        allTweets = Database.getAll(Database.unTweeterizeTable)
-        tweets = []
-
-        for tweet in allTweets:
-
-            sentiment = tweet['is_spam']
-            tweet = tweet['clear_text']
-            featureVector = SpamTools.getFeatureVector(tweet)
-            self.featureList.extend(featureVector)
-            tweets.append((featureVector, sentiment))
-
-        self.featureList = list(set(self.featureList))
-
-        # Extract feature vector for all tweets in one shote
-        training_set = nltk.classify.util.apply_features(self.extractFeatures, tweets)
+        training_set = []
+        file = open('../Etc/trainingTest.csv', 'r')
+        for line in file:
+            training_set.append(ast.literal_eval(line))
 
         # Train the classifier
         return nltk.NaiveBayesClassifier.train(training_set)

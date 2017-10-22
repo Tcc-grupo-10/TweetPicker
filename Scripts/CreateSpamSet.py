@@ -34,8 +34,11 @@ class CreateSpamSet(object):
         # Extract feature vector for all tweets in one shote
         training_set = nltk.classify.util.apply_features(self.extractFeatures, tweets)
 
-        # Train the classifier
-        return nltk.NaiveBayesClassifier.train(training_set)
+        f = open('../Etc/trainingTest.csv', 'w')
+        for a in training_set:
+            # print(str(a))
+            # print(str(a).encode('utf-8'))
+            # wr.writerow([account_id, objective])
+            f.write(str(a))
+            f.write("\n")
 
-    def classifyTweet(self, tweet):
-        return self.nbClassifier.classify(self.extractFeatures(SpamTools.getFeatureVector(tweet)))
