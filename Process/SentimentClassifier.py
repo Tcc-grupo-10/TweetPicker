@@ -13,7 +13,7 @@ def run(allTweets):
     for tweet in allTweets:
         # TODO -> JUST DO IT! MAKE THOSE SENTIMENT COME TRUE!
         tokens = pos_tag(tknzr.tokenize(tweet))
-        print tokens
+        print (tokens)
 
     #return sentiments
 

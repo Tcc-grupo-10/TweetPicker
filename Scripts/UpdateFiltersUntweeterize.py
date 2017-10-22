@@ -28,16 +28,16 @@ for untt in untweet:
         untt["raw_text"] = rawTw[0]["text"]
 
         if rawTw[0]["search_key"] == "got" and "#got" not in rawTw[0]["text"].lower():
-            print "NOT contains #got " + " | " + rawTw[0]["search_key"] + " | " + rawTw[0]["text"].lower()
+            print ("NOT contains #got " + " | " + rawTw[0]["search_key"] + " | " + rawTw[0]["text"].lower())
             Database.deleteItem(rawTw[0]["tweet_id"], Database.unTweeterizeTable)
             removed = removed + 1
         else:
-            print "UPDATE " + " | " + rawTw[0]["search_key"] + " | " + untt["tweet_id"]
+            print ("UPDATE " + " | " + rawTw[0]["search_key"] + " | " + untt["tweet_id"])
             unTweeterizeTableUpdate(untt["tweet_id"], untt["clear_text"], untt["raw_text"])
             updated = updated + 1
 
     else:
-        print rawTw
+        print (rawTw)
 
-print "removed: {}".format(removed)
-print "updated: {}".format(updated)
+print ("removed: {}".format(removed))
+print ("updated: {}".format(updated))

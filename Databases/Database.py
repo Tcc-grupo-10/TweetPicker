@@ -1,6 +1,6 @@
 import os
 import boto3
-import DatabaseCreator
+from Databases import DatabaseCreator
 
 accessKey = os.environ['access_key']
 secretAccess = os.environ['secret_access']
@@ -21,26 +21,26 @@ def insertItem(item, table):
     try:
         table.put_item(Item = item)
     except Exception as e:
-        print "ERRO INSERINDO: ({0}): {1}".format(e.errno, e.strerror)
+        print ("ERRO INSERINDO: ({0}): {1}".format(e.errno, e.strerror))
 
 
 def updateItem(item, table):
     # TODO -> JUST DO IT!
     try:
         # table.put_item(Item=item)
-        print "If you are reading this on the console, you forgot to do the Database.updateItem"
+        print ("If you are reading this on the console, you forgot to do the Database.updateItem")
     except Exception as e:
-        print "ERRO INSERINDO: ({0}): {1}".format(e.errno, e.strerror)
+        print ("ERRO INSERINDO: ({0}): {1}".format(e.errno, e.strerror))
 
 
 def countItens(table):
-    print table.item_count
+    print (table.item_count)
 
 
 def getAll(table):
     response = table.scan()
     allTweets = response['Items']
-    print len(allTweets)
+    print (len(allTweets))
 
     while 'LastEvaluatedKey' in response:
         response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])

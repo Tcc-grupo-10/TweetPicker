@@ -1,37 +1,48 @@
-import language_check
 import re
 from nltk.tokenize import TweetTokenizer
+import http.client
+import urllib.parse
+import json
 
-
-# Corrige erros gramaticais
-def grammarCheck(tweet):
-    tool = language_check.LanguageTool('en-US')
-    matches = tool.check(tweet)
-    while len(matches) != 0:
-        tweetLog = tweet
-        tweet = language_check.correct(tweet, matches)
-        matches = tool.check(tweet)
-        if tweet == tweetLog:
-            break
-    return tweet.lower()
-
-
+"""
 # Converte Tokens em uma string.
 def untokenize(tokens):
     text = ' '.join(tokens)
     step1 = text.replace("`` ", '"').replace(" ''", '"').replace('. . .', '...')
     step2 = step1.replace(" ( ", " (").replace(" ) ", ") ")
     step3 = re.sub(r' ([.,:;?!%]+)([ \'"`])', r"\1\2", step2)
-    step4 = re.sub(r' ([.,:;?!%]+)$', r"\1", step3)
+    step4 = re.sub(r' ([.,:];?!%]+)$', r"\1", step3)
     step5 = step4.replace(" '", "'").replace(" n't", "n't").replace("can not", "cannot")
     step6 = step5.replace(" ` ", " '")
     text = step6.strip()
     return text
+"""
+# Corrige erros gramaticais
+def azureSpellCheck(tweet):
+    params = {'mkt': 'en-US', 'mode': 'spell', 'text': tweet}
+    # NOTE: Replace this example key with a valid subscription key.
+    key = 'KEY_HERE'
+    host = 'api.cognitive.microsoft.com'
+    path = '/bing/v7.0/spellcheck'
+    headers = {'Ocp-Apim-Subscription-Key': key,
+               'Content-Type': 'application/x-www-form-urlencoded'}
+    conn = http.client.HTTPSConnection(host)
+    params = urllib.parse.urlencode(params)
+    conn.request("POST", path, params, headers)
+    response = conn.getresponse()
+    suggestions = json.loads(response.read())
+    for indexSugg, suggestion in enumerate(suggestions["flaggedTokens"]):
+        suggestion["suggestions"][0]["suggestion"]
+        if suggestion["token"] in tweet:
+            tweet = tweet.replace(suggestion["token"], suggestion["suggestions"][0]["suggestion"])
+    return tweet
+
+
 
 
 # Dicionario com alguns acronimos da lingua inglesa.
-def dictionaryList(token):
-    Dictionary = {
+def dictionaryList(tweet):
+    dictionary = {
         '2F4U': "too fast for you",
         '4YEO': "for your eyes only",
         'FYE': "for your eyes",
@@ -249,7 +260,6 @@ def dictionaryList(token):
         "ORLY": "oh, really",
         "PLMK": "please let me know",
         "QOTD": "quote of the day",
-        "RE": "in reply to, in regards to",
         "RTQ": "read the question",
         "SFW": "safe for work",
         "SMDH": "shaking my damn head, smh, only more so",
@@ -266,7 +276,6 @@ def dictionaryList(token):
         "TYIA": "thank you in advance",
         "TYT": "take your time",
         "TYVW": "thank you very much",
-        "W": "with",
         "WTV": "whatever",
         "YGTR": "you got that right",
         "YKWIM": "you know what i mean",
@@ -274,29 +283,15 @@ def dictionaryList(token):
         "YMMV": "your mileage may vary",
         "YOLO": "you only live once",
         "YOYO": "you're on your own",
-        "YW": "you're welcome",
-        "ZOMG": "omg to the max"
+        "YW": "you're welcome"
     }
-    possibleAcronym = token.upper()
-    token = Dictionary.get(possibleAcronym, token)
-    return token
-
-
-def dictonaryCheck(tweet):
-    # TODO-> Adicionar mais versatilidade ao dicionario para palavras junto de simbolos.
-    # Separa as palavras do tweet em tokens para analise individual
-    tokens = TweetTokenizer().tokenize(tweet)
-    tokenCounter=-1
-    for token in tokens:
-        tokenCounter += 1
-        tokens[tokenCounter] = dictionaryList(token)
-    # untokenize() e um metodo criado para converter tokens em uma unica string.
-    tweet = untokenize(tokens)
-    tweet
+    possibleAcronym = tweet.upper()
+    pattern = re.compile(r'\b(' + '|'.join(dictionary.keys()) + r')\b')
+    tweet = pattern.sub(lambda x: dictionary[x.group()], possibleAcronym).lower()
     return tweet
 
-
 def processTweet(tweet):
-    tweet = dictonaryCheck(tweet)
-    tweet = grammarCheck(tweet)
+    tweet = dictionaryList(tweet)
+    tweet = azureSpellCheck(tweet)
+    print(tweet)
     return tweet
