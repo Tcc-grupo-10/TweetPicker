@@ -5,9 +5,11 @@ from Services import SpamTools
 
 class CreateSpamSet(object):
 
-    def __init__(self):
+    def __init__(self, useStopwords = False, nGram = 1):
         self.featureList = []
-        self.nbClassifier = self.createSet()
+        self.nGram = nGram
+        self.stopwords = SpamTools.getStopwords(useStopwords)
+        self.createSet()
 
     def extractFeatures(self, tweet):
         tweet_words = set(tweet)
@@ -25,7 +27,7 @@ class CreateSpamSet(object):
 
             sentiment = tweet['is_spam']
             tweet = tweet['clear_text']
-            featureVector = SpamTools.getFeatureVector(tweet)
+            featureVector = SpamTools.getFeatureVector(tweet, self.nGram)
             self.featureList.extend(featureVector)
             tweets.append((featureVector, sentiment))
 
@@ -42,3 +44,5 @@ class CreateSpamSet(object):
             f.write(str(a))
             f.write("\n")
 
+
+CreateSpamSet()

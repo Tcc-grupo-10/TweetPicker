@@ -5,13 +5,16 @@ import ast
 
 class SpamSet(object):
 
-    def __init__(self):
+    def __init__(self, useStopwords = False, nGram = 1):
         self.featureList = []
+        self.nGram = nGram
+        self.stopwords = SpamTools.getStopwords(useStopwords)
         self.nbClassifier = self.createSet()
 
     def extractFeatures(self, tweet):
         tweet_words = set(tweet)
         features = {}
+        # TODO -> Check this featureList.. I think that this is empty
         for word in self.featureList:
             features['contains(%s)' % word] = (word in tweet_words)
         return features
@@ -27,4 +30,4 @@ class SpamSet(object):
         return nltk.NaiveBayesClassifier.train(training_set)
 
     def classifyTweet(self, tweet):
-        return self.nbClassifier.classify(self.extractFeatures(SpamTools.getFeatureVector(tweet)))
+        return self.nbClassifier.classify(self.extractFeatures(SpamTools.getFeatureVector(tweet, self.nGram)))

@@ -7,7 +7,7 @@ def replaceTwoOrMore(s):
     return pattern.sub(r"\1\1", s)
 
 
-def getFeatureVector(tweet, nGram = 1, stopwords = False):
+def getFeatureVector(tweet, nGram, stopwords = []):
     featureVector = []
     words = tweet.split()
     for w in words:
@@ -17,8 +17,18 @@ def getFeatureVector(tweet, nGram = 1, stopwords = False):
         # check if the word stats with an alphabet
         val = re.search(r"^[a-zA-Z][a-zA-Z0-9]*$", w)
 
-        if val is not None:
+        if w not in stopwords and val is not None:
             featureVector.append(w.lower())
 
     return featureVector
 
+
+def getStopwords(swActive):
+    if swActive:
+        arr = []
+        file = open('../Etc/stopwords.txt', 'r')
+        for line in file:
+            arr.append(line)
+        return arr
+    else:
+        return []
