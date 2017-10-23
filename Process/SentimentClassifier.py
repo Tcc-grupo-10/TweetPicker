@@ -5,6 +5,7 @@ from nltk.parse import stanford
 import os
 from nltk.parse.stanford import StanfordParser
 import re
+from nltk.corpus import wordnet
 
 class InstanceTweet:
     def __init__(self, tweet):
@@ -22,12 +23,18 @@ class InstanceTweet:
         self.tweet = " ".join(re.sub(r":\w+:",'',tweet).split())
 
 
+def get_wordnet_pos(treebank_tag):
 
-
-
-
-
-
+    if treebank_tag.startswith('J'):
+        return wordnet.ADJ
+    elif treebank_tag.startswith('V'):
+        return wordnet.VERB
+    elif treebank_tag.startswith('N'):
+        return wordnet.NOUN
+    elif treebank_tag.startswith('R'):
+        return wordnet.ADV
+    else:
+        return None
 
 def run():
     java_path = "C:\ProgrA~1\Java\jdk1.8.0_151"
@@ -40,9 +47,9 @@ def run():
 
 
     qallTweets= []
-    tweetList = ["I'm going to the market to buy vegetables and some very fresh fruits.", 'He are very smart', "bababa bababa :rola_check: babab"]
+    tweetList = ["I'm going to the market to buy vegetables and some very fresh fruits.", 'i am loving it', "bababa bababa :rola_check: babab"]
     allTweets = [InstanceTweet(tweet) for tweet in tweetList]
-    #TODO -> Identificar emoji em tweets(tokens que começam e terminam com ':' e tem mais de uma posicao)
+    #TODO -> Resolver problemas em lemmatizar tokens que nao sao apenas letras
     st = StanfordPOSTagger('C:\Progra~1\stanford-postagger\models\english-bidirectional-distsim.tagger','C:\Progra~1\stanford-postagger\stanford-postagger.jar')
     lemmatizer = WordNetLemmatizer()
     for indexTweet, tweet in enumerate(allTweets):
@@ -51,9 +58,12 @@ def run():
         #Transforma tweets em tokens
         tweet.tweetTokenized = st.tag(tweet.tweet.split())
         #faz a lemmatizacao das palavras
-        for word in tweet.tweet.split():
-            tweet.tweetLemmatized.append(lemmatizer.lemmatize(word, 'v'))
-            #tweet.tweetLemmatized.append(lemmatizer.lemmatize(word, 'n'))
+        for word, tag in tweet.tweetTokenized:
+            wntag = get_wordnet_pos(tag)
+            if wntag is None:  # not supply tag in case of None
+                tweet.tweetLemmatized.append(lemmatizer.lemmatize(word))
+            else:
+                tweet.tweetLemmatized.append(lemmatizer.lemmatize(word, pos=wntag))
         #Transforma as palavras lemmatizadas em uma unica string
         tweet.tweetLemmatized = " ".join(tweet.tweetLemmatized)
         #Seta a arvore do tweet no objeto
@@ -62,9 +72,5 @@ def run():
         for line in sentence:
             for sentence in line:
                 sentence.draw()"""
-        print(tweet.tweetLemmatized)
-
-
  #return sentiments
 
-run()
