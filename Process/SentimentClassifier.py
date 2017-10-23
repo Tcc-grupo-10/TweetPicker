@@ -40,7 +40,7 @@ def run():
 
 
     qallTweets= []
-    tweetList = ["I'm going to the market to buy vegetables and some very fresh fruits.", 'He goes to the market because is suped', "bababa bababa :rola_check: babab"]
+    tweetList = ["I'm going to the market to buy vegetables and some very fresh fruits.", 'He are very smart', "bababa bababa :rola_check: babab"]
     allTweets = [InstanceTweet(tweet) for tweet in tweetList]
     #TODO -> Identificar emoji em tweets(tokens que começam e terminam com ':' e tem mais de uma posicao)
     st = StanfordPOSTagger('C:\Progra~1\stanford-postagger\models\english-bidirectional-distsim.tagger','C:\Progra~1\stanford-postagger\stanford-postagger.jar')
@@ -52,7 +52,8 @@ def run():
         tweet.tweetTokenized = st.tag(tweet.tweet.split())
         #faz a lemmatizacao das palavras
         for word in tweet.tweet.split():
-            tweet.tweetLemmatized.append(lemmatizer.lemmatize(word))
+            tweet.tweetLemmatized.append(lemmatizer.lemmatize(word, 'v'))
+            #tweet.tweetLemmatized.append(lemmatizer.lemmatize(word, 'n'))
         #Transforma as palavras lemmatizadas em uma unica string
         tweet.tweetLemmatized = " ".join(tweet.tweetLemmatized)
         #Seta a arvore do tweet no objeto
@@ -61,7 +62,7 @@ def run():
         for line in sentence:
             for sentence in line:
                 sentence.draw()"""
-
+        print(tweet.tweetLemmatized)
 
 
  #return sentiments
