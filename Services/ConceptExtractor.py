@@ -6,7 +6,7 @@ import os
 from nltk.parse.stanford import StanfordParser
 import re
 from nltk.corpus import wordnet
-
+import string
 
 class InstanceTweet:
     def __init__(self, text):
@@ -61,6 +61,11 @@ def run():
     for indexTweet, tweet in enumerate(allTweets):
         # EmojiExtractor
         tweet.emojiExtractor(tweet.text)
+        #Retira toda a pontuação dos tweets(Plano B)
+        #tweet.text = tweet.text.strip(string.punctuation)
+
+
+
         # Transforma tweets em tokens
         tweet.tweetTokenized = st.tag(tweet.text.split())
         # faz a lemmatizacao das palavras
