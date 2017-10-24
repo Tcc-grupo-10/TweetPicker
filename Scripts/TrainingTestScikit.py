@@ -46,8 +46,12 @@ def removeFrequencyFromVector(qtd):
 
 
 def removeFrequencyFromTweets():
+    newTweets = []
+    justWords = list(map(lambda x: x[0], featureVector))
+
     for tweet in tweets:
-        return " ".join(list(filter(lambda x: x in featureVector, tweet)))
+        newTweets.append(" ".join(list(filter(lambda x: x in justWords, tweet))))
+    return newTweets
 
 
 for obj in geten:
@@ -64,7 +68,6 @@ for obj in geten:
     testData.append({"clear_text": obj[0], "is_spam": spam})
     ww = SpamTools.getFeatureVector(obj[0], 2, [])
     updateVector(ww)
-    # tweets.append(" ".join(ww))
     tweets.append(ww)
     targ.append(spam)
 
@@ -74,6 +77,7 @@ tweets = removeFrequencyFromTweets()
 
 
 count_vect = CountVectorizer()
+print("Tweets: {}".format(tweets))
 X_train_counts = count_vect.fit_transform(tweets)
 
 tf_transformer = TfidfTransformer(use_idf=False).fit(X_train_counts)
