@@ -1,7 +1,7 @@
 import csv
 from Services import SpamTools
 import ast
-
+import operator
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.naive_bayes import MultinomialNB
@@ -28,6 +28,27 @@ with open('../Etc/test2.csv', 'rt', encoding="utf8") as f:
 geten = csvData[:20]
 targ = []
 tweets = []
+featureVector = {}
+
+
+def updateVector(features):
+    for feature in features:
+        try:
+            featureVector[feature] = featureVector[feature] + 1
+        except:
+            featureVector[feature] = 1
+
+
+def removeFrequencyFromVector(qtd):
+    featureVectors = {k: v for k, v in featureVector.items() if v > qtd}
+    fileredVector = sorted(featureVectors.items(), key=operator.itemgetter(1))
+    return fileredVector
+
+
+def removeFrequencyFromTweets():
+    for tweet in tweets:
+        return " ".join(list(filter(lambda x: x in featureVector, tweet)))
+
 
 for obj in geten:
 
@@ -42,8 +63,14 @@ for obj in geten:
 
     testData.append({"clear_text": obj[0], "is_spam": spam})
     ww = SpamTools.getFeatureVector(obj[0], 2, [])
-    tweets.append(" ".join(ww))
+    updateVector(ww)
+    # tweets.append(" ".join(ww))
+    tweets.append(ww)
     targ.append(spam)
+
+featureVector = removeFrequencyFromVector(1)
+tweets = removeFrequencyFromTweets()
+# print(featureVector)
 
 
 count_vect = CountVectorizer()
@@ -69,4 +96,3 @@ predicted = clf.predict(X_new_tfidf)
 
 for doc, category in zip(docs_new, predicted):
     print('%r => %s' % (doc, category))
-
