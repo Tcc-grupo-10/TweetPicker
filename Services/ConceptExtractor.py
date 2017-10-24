@@ -94,16 +94,7 @@ def run():
         """for line in tweet.tweetTree:
             for tweet.tweetTree in line:"""
 
-    """hint: Please, commit
-    your
-    changes
-    before
-    merging.
-    fatal: Exiting
-    because
-    of
-    unfinished
-    merge."""
+
 
     return allTweets
 
