@@ -6,15 +6,21 @@ import os
 from nltk.parse.stanford import StanfordParser
 import re
 from nltk.corpus import wordnet
-import string
+from nltk.util import ngrams
+
+
+from nltk.parse.stanford import StanfordDependencyParser
 
 class InstanceTweet:
     def __init__(self, text):
         self.text = text
+        self.intact = text
         self.emoji = []
         self.tweetTokenized = []
         self.tweetLemmatized = []
         self.tweetTree = []
+        self.ngram = []
+
 
     def emojiExtractor(self, text):
         self.emoji = re.findall(":\w+:", text)
@@ -44,14 +50,15 @@ def run():
     os.environ['JAVAHOME'] = java_path
     os.environ['STANFORD_PARSER'] = 'C:\Progra~1\stanford-parser-full-2017-06-09\stanford-parser.jar'
     os.environ['STANFORD_MODELS'] = 'C:\Progra~1\stanford-parser-full-2017-06-09\stanford-parser-3.8.0-models.jar'
-    model_path = 'C:\Progra~1\stanford-parser-full-2017-06-09\englishPCFG.ser.gz'
-    parser = stanford.StanfordParser(model_path=model_path)
+    #model_path = 'C:\Progra~1\stanford-parser-full-2017-06-09\englishPCFG.ser.gz'
+    #parser = stanford.StanfordParser(model_path=model_path)
     parser = StanfordParser('C:\Progra~1\stanford-parser-full-2017-06-09\stanford-parser.jar',
                             'C:\Progra~1\stanford-parser-full-2017-06-09\stanford-parser-3.8.0-models.jar')
 
+    tokenPunctuation = r"""!.,;()+"""
+
     qallTweets = []
-    tweetList = ["I'm going to the market to buy vegetables and some very fresh fruits.", 'i am loving it :smile: :sm_ile:',
-                 "i'm working all days."]
+    tweetList = ["My dog also likes eating sausage."]
 
     allTweets = [InstanceTweet(tweet) for tweet in tweetList]
     # TODO -> Resolver problemas em lemmatizar tokens que nao sao apenas letras
@@ -61,11 +68,8 @@ def run():
     for indexTweet, tweet in enumerate(allTweets):
         # EmojiExtractor
         tweet.emojiExtractor(tweet.text)
-        #Retira toda a pontuação dos tweets(Plano B)
-        #tweet.text = tweet.text.strip(string.punctuation)
-
-
-
+        #Insere espacos entre as pontuacoes para nao interferir no lemmatize
+        tweet.text = tweet.text.translate(str.maketrans({key: " {0} ".format(key) for key in tokenPunctuation}))
         # Transforma tweets em tokens
         tweet.tweetTokenized = st.tag(tweet.text.split())
         # faz a lemmatizacao das palavras
@@ -84,7 +88,25 @@ def run():
             for tweet.tweetTree in line:
                 tweet.tweetTree.draw()"""
 
-        print(tweet.emoji, tweet.tweetTokenized, tweet.tweetLemmatized)
+        #print(tweet.tweetTree)
+        tweet.tweetTree = list(parser.raw_parse(tweet.tweetLemmatized))
+
+        """for line in tweet.tweetTree:
+            for tweet.tweetTree in line:"""
+
+        tweet.tweetTree[0].draw()
+
+
+
+
+
+
+
+
+
+
+
+
     return allTweets
 
 run()
