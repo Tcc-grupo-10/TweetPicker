@@ -1,6 +1,8 @@
 import nltk as nltk
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.naive_bayes import MultinomialNB
+from sklearn.svm import SVC
+
 from Services import SpamTools
 import ast
 
@@ -36,3 +38,6 @@ class SpamSet(object):
         # TODO -> how to return that?
         for doc, category in zip(docs_processed, predicted):
             print('%r => %s' % (doc, category))
+
+
+

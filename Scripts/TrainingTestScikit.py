@@ -1,6 +1,7 @@
 import csv
 
 from scipy.sparse import csr_matrix
+from sklearn.svm import SVC
 
 from Services import SpamTools
 import ast
@@ -111,5 +112,18 @@ X_new_tfidf = tfidf_transformer.transform(X_new_counts)
 clf = MultinomialNB().fit(training_set, targ)
 predicted = clf.predict(X_new_tfidf)
 
+print("\n\nNB:\n")
+print("pred: {}".format(predicted))
+
 for doc, category in zip(docs_new, predicted):
+    print('%r => %s' % (doc, category))
+
+clfS = SVC().fit(training_set, targ)
+predictedS = clfS.predict(X_new_tfidf)
+
+print("\n\nSVM:\n")
+
+print("pred: {}".format(predictedS))
+
+for doc, category in zip(docs_new, predictedS):
     print('%r => %s' % (doc, category))
