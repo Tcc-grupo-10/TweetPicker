@@ -1,46 +1,44 @@
-import nltk as nltk
 from Databases import Database
 from Services import SpamTools
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfTransformer
 
 
 class CreateSpamSet(object):
 
-    def __init__(self, useStopwords = False, nGram = 1):
+    def __init__(self, useStopwords = False, nGram = 1, frequencyMin = 1):
         self.featureList = []
+        self.featureVector = []
+        self.tweets = []
+        self.isSpamList = []
+        self.frequencyMin = frequencyMin
         self.nGram = nGram
         self.stopwords = SpamTools.getStopwords(useStopwords)
         self.createSet()
 
-    def extractFeatures(self, tweet):
-        tweet_words = set(tweet)
-        features = {}
-        for word in self.featureList:
-            features['contains(%s)' % word] = (word in tweet_words)
-        return features
+        self.testData = []
 
     def createSet(self):
-
         allTweets = Database.getAll(Database.unTweeterizeTable)
         # TODO -> filter only "is_training" objects
-        tweets = []
 
         for tweet in allTweets:
+            self.testData.append({"clear_text": tweet["clear_text"], "is_spam": tweet["is_spam"]})
+            tweetFV = SpamTools.getFeatureVector(tweet["clear_text"], self.nGram, self.stopwords)
+            self.featureVector = SpamTools.updateVector(tweetFV, self.featureVector)
+            self.tweets.append(tweetFV)
+            self.isSpamList.append(tweet["is_spam"])
 
-            sentiment = tweet['is_spam']
-            tweet = tweet['clear_text']
-            featureVector = SpamTools.getFeatureVector(tweet, self.nGram)
-            self.featureList.extend(featureVector)
-            tweets.append((featureVector, sentiment))
+        self.featureVector = SpamTools.removeFrequencyFromVector(self.frequencyMin, self.featureVector)
+        self.tweets = SpamTools.removeFrequencyFromTweets(self.featureVector, self.tweets)
 
-        self.featureList = list(set(self.featureList))
+        count_vect = CountVectorizer()
+        X_train_counts = count_vect.fit_transform(self.tweets)
 
-        # Extract feature vector for all tweets in one shote
-        training_set = nltk.classify.util.apply_features(self.extractFeatures, tweets)
+        tfidf_transformer = TfidfTransformer()
+        X_train_tfidf = tfidf_transformer.fit_transform(X_train_counts)
 
-        f = open('../Etc/trainingTest.csv', 'w')
-        for a in training_set:
-            f.write(str(a))
-            f.write("\n")
+        SpamTools.save_sparse_csr(X_train_tfidf)
 
 
 CreateSpamSet()

@@ -1,4 +1,7 @@
 import csv
+
+from scipy.sparse import csr_matrix
+
 from Services import SpamTools
 import ast
 import operator
@@ -77,14 +80,22 @@ tweets = removeFrequencyFromTweets()
 
 
 count_vect = CountVectorizer()
-print("Tweets: {}".format(tweets))
 X_train_counts = count_vect.fit_transform(tweets)
-
-tf_transformer = TfidfTransformer(use_idf=False).fit(X_train_counts)
-X_train_tf = tf_transformer.transform(X_train_counts)
 
 tfidf_transformer = TfidfTransformer()
 X_train_tfidf = tfidf_transformer.fit_transform(X_train_counts)
+
+def save_sparse_csr(array):
+    np.savez('../Etc/trainingTest2.npz', data=array.data, indices=array.indices,
+             indptr=array.indptr, shape=array.shape)
+
+def load_sparse_csr():
+    loader = np.load('../Etc/trainingTest2.npz')
+    return csr_matrix((loader['data'], loader['indices'], loader['indptr']), shape=loader['shape'])
+
+save_sparse_csr(X_train_tfidf)
+
+training_set = load_sparse_csr()
 
 docs_new = ['are we sure this season is', 'never change, bronn', 'remembering the last episode is in 30 minutes', 'hound was looking for a']
 docs_processed = []
@@ -95,7 +106,7 @@ X_new_counts = count_vect.transform(docs_processed)
 X_new_tfidf = tfidf_transformer.transform(X_new_counts)
 
 
-clf = MultinomialNB().fit(X_train_tfidf, targ)
+clf = MultinomialNB().fit(training_set, targ)
 predicted = clf.predict(X_new_tfidf)
 
 for doc, category in zip(docs_new, predicted):

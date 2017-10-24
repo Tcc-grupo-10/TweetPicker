@@ -1,5 +1,5 @@
 import re
-import string
+import operator
 
 
 def replaceTwoOrMore(s):
@@ -51,3 +51,37 @@ def getStopwords(swActive):
         return arr
     else:
         return []
+
+
+def updateVector(features, featureVector):
+    for feature in features:
+        try:
+            featureVector[feature] = featureVector[feature] + 1
+        except:
+            featureVector[feature] = 1
+    return features
+
+
+def removeFrequencyFromVector(qtd, featureVector):
+    featureVectors = {k: v for k, v in featureVector.items() if v > qtd}
+    fileredVector = sorted(featureVectors.items(), key=operator.itemgetter(1))
+    return fileredVector
+
+
+def removeFrequencyFromTweets(featureVector, tweets):
+    newTweets = []
+    justWords = list(map(lambda x: x[0], featureVector))
+
+    for tweet in tweets:
+        newTweets.append(" ".join(list(filter(lambda x: x in justWords, tweet))))
+    return newTweets
+
+
+def save_sparse_csr(array):
+    np.savez('../Etc/trainingTest2.npz', data=array.data, indices=array.indices,
+             indptr=array.indptr, shape=array.shape)
+
+
+def load_sparse_csr():
+    loader = np.load('../Etc/trainingTest2.npz')
+    return csr_matrix((loader['data'], loader['indices'], loader['indptr']), shape=loader['shape'])
