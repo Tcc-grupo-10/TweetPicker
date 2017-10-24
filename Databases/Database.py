@@ -1,6 +1,6 @@
 import os
 import boto3
-import DatabaseCreator
+from Databases import DatabaseCreator
 
 accessKey = os.environ['access_key']
 secretAccess = os.environ['secret_access']
