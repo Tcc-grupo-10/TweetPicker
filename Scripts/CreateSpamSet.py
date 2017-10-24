@@ -7,7 +7,7 @@ from sklearn.feature_extraction.text import TfidfTransformer
 class CreateSpamSet(object):
 
     def __init__(self, useStopwords = False, nGram = 1, frequencyMin = 1):
-        self.featureList = []
+
         self.featureVector = []
         self.tweets = []
         self.isSpamList = []
@@ -39,6 +39,8 @@ class CreateSpamSet(object):
         X_train_tfidf = tfidf_transformer.fit_transform(X_train_counts)
 
         SpamTools.save_sparse_csr(X_train_tfidf)
+        f = open('../Etc/isSpamList.txt', 'w')
+        f.write(str(self.isSpamList))
 
 
 CreateSpamSet()

@@ -1,7 +1,8 @@
 import nltk as nltk
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+from sklearn.naive_bayes import MultinomialNB
 from Services import SpamTools
 import ast
-
 
 class SpamSet(object):
 
@@ -9,25 +10,29 @@ class SpamSet(object):
         self.featureList = []
         self.nGram = nGram
         self.stopwords = SpamTools.getStopwords(useStopwords)
-        self.nbClassifier = self.createSet()
-
-    def extractFeatures(self, tweet):
-        tweet_words = set(tweet)
-        features = {}
-        # TODO -> Check this featureList.. I think that this is empty
-        for word in self.featureList:
-            features['contains(%s)' % word] = (word in tweet_words)
-        return features
+        self.training_set = []
+        self.isSpamList = []
+        self.createSet()
 
     def createSet(self):
+        self.training_set = SpamTools.load_sparse_csr()
 
-        training_set = []
-        file = open('../Etc/trainingTest.csv', 'r')
-        for line in file:
-            training_set.append(ast.literal_eval(line))
-
-        # Train the classifier
-        return nltk.NaiveBayesClassifier.train(training_set)
+        o = open('../Etc/isSpamList.txt', 'r')
+        self.isSpamList = ast.literal_eval(o.read())
 
     def classifyTweet(self, tweet):
-        return self.nbClassifier.classify(self.extractFeatures(SpamTools.getFeatureVector(tweet, self.nGram)))
+        docs_processed = []
+        docs_processed.append(" ".join(SpamTools.getFeatureVector(tweet, 2, [])))
+
+        count_vect = CountVectorizer()
+        tfidf_transformer = TfidfTransformer()
+
+        X_new_counts = count_vect.transform(docs_processed)
+        X_new_tfidf = tfidf_transformer.transform(X_new_counts)
+
+        clf = MultinomialNB().fit(self.training_set, self.isSpamList)
+        predicted = clf.predict(X_new_tfidf)
+
+        # TODO -> how to return that?
+        for doc, category in zip(docs_processed, predicted):
+            print('%r => %s' % (doc, category))

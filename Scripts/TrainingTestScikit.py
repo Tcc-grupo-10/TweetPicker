@@ -94,6 +94,8 @@ def load_sparse_csr():
     return csr_matrix((loader['data'], loader['indices'], loader['indptr']), shape=loader['shape'])
 
 save_sparse_csr(X_train_tfidf)
+f = open('../Etc/isSpamList.txt', 'w')
+f.write(str(targ))
 
 training_set = load_sparse_csr()
 
