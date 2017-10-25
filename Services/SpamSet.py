@@ -12,6 +12,7 @@ class SpamSet(object):
         self.featureList = []
         self.nGram = nGram
         self.stopwords = SpamTools.getStopwords(useStopwords)
+        self.featureList = SpamTools.getFeatureList()
         self.training_set = []
         self.isSpamList = []
         self.createSet()
@@ -23,8 +24,7 @@ class SpamSet(object):
         self.isSpamList = ast.literal_eval(o.read())
 
     def classifyTweet(self, tweet):
-        docs_processed = []
-        docs_processed.append(" ".join(SpamTools.getFeatureVector(tweet, 2, [])))
+        docs_processed = SpamTools.getTweetFeatureVector(tweet, self.featureList)
 
         count_vect = CountVectorizer()
         tfidf_transformer = TfidfTransformer()

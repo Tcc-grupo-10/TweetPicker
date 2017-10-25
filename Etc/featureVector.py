@@ -9,7 +9,7 @@ se não for, acrescenta no n-grama
 """
 
 
-def getAllFeatures(training_tweets, stopwords=, grams, min_frequency):
+def getAllFeatures(training_tweets, stopwords, grams, min_frequency):
     n_grams = {}
 
     for tweet in training_tweets:

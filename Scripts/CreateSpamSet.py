@@ -42,5 +42,8 @@ class CreateSpamSet(object):
         f = open('../Etc/isSpamList.txt', 'w')
         f.write(str(self.isSpamList))
 
+        f = open('../Etc/featureVector.txt', 'w')
+        f.write(str(self.featureVector))
+
 
 CreateSpamSet()

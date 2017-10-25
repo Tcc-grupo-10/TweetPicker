@@ -46,15 +46,14 @@ def updateVector(features):
 def removeFrequencyFromVector(qtd):
     featureVectors = {k: v for k, v in featureVector.items() if v > qtd}
     fileredVector = sorted(featureVectors.items(), key=operator.itemgetter(1))
-    return fileredVector
+    return list(map(lambda x: x[0], fileredVector))
 
 
 def removeFrequencyFromTweets():
     newTweets = []
-    justWords = list(map(lambda x: x[0], featureVector))
 
     for tweet in tweets:
-        newTweets.append(" ".join(list(filter(lambda x: x in justWords, tweet))))
+        newTweets.append(" ".join(list(filter(lambda x: x in featureVector, tweet))))
     return newTweets
 
 
@@ -77,7 +76,7 @@ for obj in geten:
 
 featureVector = removeFrequencyFromVector(1)
 tweets = removeFrequencyFromTweets()
-# print(featureVector)
+print(featureVector)
 
 
 count_vect = CountVectorizer()
@@ -98,12 +97,17 @@ save_sparse_csr(X_train_tfidf)
 f = open('../Etc/isSpamList.txt', 'w')
 f.write(str(targ))
 
+f = open('../Etc/featureVector.txt', 'w')
+f.write(str(featureVector))
+
 training_set = load_sparse_csr()
 
 docs_new = ['are we sure this season is', 'never change, bronn', 'remembering the last episode is in 30 minutes', 'hound was looking for a']
 docs_processed = []
 for nd in docs_new:
-    docs_processed.append(" ".join(SpamTools.getFeatureVector(nd, 2, [])))
+    docs_processed.append(SpamTools.getTweetFeatureVector(nd, featureVector))
+
+print("docs_processed: {}".format(docs_processed))
 
 X_new_counts = count_vect.transform(docs_processed)
 X_new_tfidf = tfidf_transformer.transform(X_new_counts)

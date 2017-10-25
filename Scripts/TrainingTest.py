@@ -12,7 +12,6 @@ with open('../Etc/test2.csv', 'rt', encoding="utf8") as f:
     reader = csv.DictReader(f)
     # csv.reader
 
-
     for row in reader:
         tweet_id = row["tweet_id"].strip()
         clear_text = row["clear_text"].strip()

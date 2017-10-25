@@ -1,6 +1,8 @@
 import re
 import operator
-
+import operator
+import numpy as np
+from scipy.sparse import csr_matrix
 
 def replaceTwoOrMore(s):
     # look for 2 or more repetitions of character and replace with the character itself
@@ -52,6 +54,13 @@ def getStopwords(swActive):
     else:
         return []
 
+def getFeatureList():
+    arr = []
+    file = open('../Etc/featureVector.txt', 'r')
+    for line in file:
+        arr.append(line)
+    return arr
+
 
 def updateVector(features, featureVector):
     for feature in features:
@@ -75,6 +84,14 @@ def removeFrequencyFromTweets(featureVector, tweets):
     for tweet in tweets:
         newTweets.append(" ".join(list(filter(lambda x: x in justWords, tweet))))
     return newTweets
+
+
+def getTweetFeatureVector(tweet, feature_list):
+    features = []
+    for feature in feature_list:
+        if feature in tweet:
+            features.append(feature)
+    return " ".join(features)
 
 
 def save_sparse_csr(array):
