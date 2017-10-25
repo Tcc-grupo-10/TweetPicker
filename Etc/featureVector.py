@@ -9,21 +9,18 @@ se não for, acrescenta no n-grama
 """
 
 
-def getAllFeatures(training_tweets, stopwords=[",", ".", ""], grams=2, min_frequency=2):
+def getAllFeatures(training_tweets, stopwords=, grams, min_frequency):
     n_grams = {}
 
     for tweet in training_tweets:
-
         beginning = 0
         tweet_words = list(tweet.keys())[0].split(" ")
-
         gram_holder = []
 
         while beginning < len(tweet_words):
             while tweet_words[beginning] in stopwords and beginning < len(tweet_words) - 1:
                 beginning += 1
             end = beginning
-
             gram_holder.append(tweet_words[beginning])
 
             while len(gram_holder) < grams and end < len(tweet_words) - 1:
@@ -47,4 +44,8 @@ def getAllFeatures(training_tweets, stopwords=[",", ".", ""], grams=2, min_frequ
 
 getAllFeatures(({"simple tweet with text": True}, {"Another text words about nothing this simple": True}, {"something about this simple tweet": False}))
 
-# def getTweetFeatureVector():
+def getTweetFeatureVector(tweet, feature_list):
+    features = []
+    for feature in feature_list:
+        if feature in tweet:
+            features.append(feature)
