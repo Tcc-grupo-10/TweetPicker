@@ -16,7 +16,7 @@ def processTweet(tweet):
 
     # To unicode
     tweet = unidecode(tweet)
-    tweet = unicode(tweet)
+    tweet = tweet.encode(tweet, 'utf-8')
 
     # Convert to lower case
     tweet = tweet.lower()
