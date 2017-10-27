@@ -20,7 +20,8 @@ class CreateSpamSet(object):
 
     def createSet(self):
         allTweets = Database.getAll(Database.unTweeterizeTable)
-        # TODO -> filter only "is_training" objects
+        # TODO -> Check this filter
+        allTweets = list(filter(lambda x: x.get("is_training", False), allTweets))
 
         for tweet in allTweets:
             self.testData.append({"clear_text": tweet["clear_text"], "is_spam": tweet["is_spam"]})

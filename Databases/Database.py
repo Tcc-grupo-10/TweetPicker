@@ -40,7 +40,7 @@ def countItens(table):
 def getAll(table):
     response = table.scan()
     allTweets = response['Items']
-    print (len(allTweets))
+    print(len(allTweets))
 
     while 'LastEvaluatedKey' in response:
         response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])

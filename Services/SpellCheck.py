@@ -293,5 +293,4 @@ def dictionaryList(tweet):
 def processTweet(tweet):
     tweet = dictionaryList(tweet)
     tweet = azureSpellCheck(tweet)
-    print(tweet)
     return tweet
