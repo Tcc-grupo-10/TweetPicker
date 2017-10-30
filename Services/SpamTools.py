@@ -49,6 +49,7 @@ def getStopwords(swActive):
         arr = []
         file = open('../Etc/stopwords.txt', 'r')
         for line in file:
+            line = line.strip("\n")
             arr.append(line)
         return arr
     else:
