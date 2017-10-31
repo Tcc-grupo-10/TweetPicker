@@ -10,12 +10,12 @@ class ConceptExtractor(object):
         java_path = "C:\Program Files (x86)\Java\jdk1.8.0_152"
         os.environ['JAVAHOME'] = java_path
 
-        parser_jar_path = 'C:\\Users\\pezoti\Documents\\apis\\stanford-parser-full-2017-06-09\\stanford-parser.jar'
-        parser_models_path = 'C:\\Users\\pezoti\Documents\\apis\\stanford-parser-full-2017-06-09\\stanford-parser-3.8.0-models.jar'
+        parser_jar_path = 'Etc/stanford-parser.jar'
+        parser_models_path = 'Etc/stanford-parser-3.8.0-models.jar'
         self.parser = StanfordParser(parser_jar_path, parser_models_path)
 
         self.stop_words = []
-        file = open('../Etc/stopwords.txt', 'r')
+        file = open('Etc/stopwords.txt', 'r')
         for line in file:
             line = line.strip("\n")
             self.stop_words.append(line)
@@ -28,7 +28,7 @@ class ConceptExtractor(object):
 
     def extract_list_of_event_concepts(self,
                                        tweet_text="Game Of Thrones is awesome"):
-        print("text: " + tweet_text)
+        print("text: {}".format(tweet_text))
 
         list_of_concepts = []
         list_of_np_and_parent_nodes = []
