@@ -1,66 +1,52 @@
-from Databases import Database
-from Services import TwitterIntegration
+# from Databases import Database
+from Process.Tweet import Tweet
+from Services.TwitterIntegration import TwitterIntegration
 
 
-def save(searchRaw, rawKey, runId):
+class TweetPicker(object):
 
-    statuses = searchRaw.get("statuses", [])
+    def __init__(self):
+        self.integration = TwitterIntegration()
 
-    for status in statuses:
+    def save(self, searchRaw, rawKey, runId):
 
-        if "RT " not in status["text"]:
-            item = {
-                'tweet_id': status.get("id_str", "123"),
-                'text': status.get("text", "tweet not found"),
-                'retweet_count': status.get("retweet_count", 0),
-                'favorite_count': status.get("favorite_count", 0),
-                'user_id': status.get("user", {"id_str": "user_not_found"}).get("id_str", "no_id"),
-                'created_at': status.get("created_at", "duno"),
-                'language': status.get("lang", "unknown"),
-                'search_key': rawKey,
-                'run_id': runId,
-                'raw_tweet': True
-            }
+        statuses = searchRaw.get("statuses", [])
 
-            Database.insertItem(item, Database.rawTweets)
+        tweets = []
 
-    return statuses
+        for status in statuses:
 
+            if "RT " not in status["text"]:
+                tweets.append(Tweet(status.get("text", "tweet not found")))
+                item = {
+                    'tweet_id': status.get("id_str", "123"),
+                    'raw_tweet': status.get("text", "tweet not found"),
+                    'retweet_count': status.get("retweet_count", 0),
+                    'favorite_count': status.get("favorite_count", 0),
+                    'user_id': status.get("user", {"id_str": "user_not_found"}).get("id_str", "no_id"),
+                    'created_at': status.get("created_at", "duno"),
+                    'language': status.get("lang", "unknown"),
+                    'search_key': rawKey,
+                    'run_id': runId
+                }
 
-def getTweets(tokenUserless, rawKey, tweetAmount, searchEncoded, runId):
-    items = []
+                # Database.insertItem(item, Database.rawTweets)
+        return tweets
 
-    times = tweetAmount / 100 + 1
+    def getTweets(self, rawKey, tweetAmount, searchEncoded, runId):
+        items = []
+        count = 100
 
-    searchRaw = TwitterIntegration.getSearch(searchEncoded, tokenUserless)
-    items.append(save(searchRaw, rawKey, runId))
-    nextUrl = searchRaw.get("search_metadata", {}).get("next_results", "")
+        if tweetAmount < 100:
+            count = tweetAmount
 
-    for x in range(0, times):
-        searchRaw = TwitterIntegration.getNextSearch(nextUrl, tokenUserless)
-        items.append(save(searchRaw, rawKey, runId))
+        searchRaw = self.integration.getSearch(searchEncoded, count)
+        items.extend(self.save(searchRaw, rawKey, runId))
         nextUrl = searchRaw.get("search_metadata", {}).get("next_results", "")
 
-    return items
+        while len(items) < tweetAmount:
+            searchRaw = self.integration.getNextSearch(nextUrl)
+            items.extend(self.save(searchRaw, rawKey, runId))
+            nextUrl = searchRaw.get("search_metadata", {}).get("next_results", "")
 
-
-"""def waitTime(minutes):
-    mins = 0
-    while mins != minutes:
-        print ">>> Waiting Twitter Rate Limit Reset:", mins, "/", minutes
-        time.sleep(60)
-        mins += 1
-
-
-def getTweetsRec(tokenUserless, rawKey, nextUrl, times, runs, searchEncoded):
-    print "Run n:", runs
-    for x in range(0, times):
-        if nextUrl != "":
-            searchRaw = TwitterIntegration.getNextSearch(nextUrl, tokenUserless)
-            nextUrl = saveNext(searchRaw, rawKey)
-        else:
-            searchRaw = TwitterIntegration.getSearch(searchEncoded, tokenUserless)
-            nextUrl = saveNext(searchRaw, rawKey)
-
-    waitTime(16)
-    getTweetsRec(tokenUserless, rawKey, "", times, runs + 1, searchEncoded)"""
+        return items[:tweetAmount]

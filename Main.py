@@ -1,34 +1,50 @@
 import urllib
+import urllib.parse
 import hashlib
 import datetime
 from random import randint
-from Process import TweetPicker, SpamFiltering, PreProcessing, SentimentClassifier
+from Process.TweetPicker import TweetPicker
+from Process.PreProcessing import PreProcessing
+from Process.SpamFiltering import SpamFiltering
+from Process.SentimentClassifier import SentimentClassifier
 from Services import TwitterIntegration
 
-# SearchHotkeys
-rawKey = "WinterIsHere"
 
-if " " not in rawKey:
-    if not rawKey.startswith("#"):
-        rawKey = "#" + rawKey
+class Main(object):
 
-searchEncoded = urllib.quote(rawKey)
+    def __init__(self, rawKey):
+        self.rawKey = rawKey
 
-rawId = rawKey + "|" + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "|{}".format(randint(0, 100))
-runId = hashlib.md5(rawId.encode()).hexdigest()
+        if " " not in self.rawKey:
+            if not self.rawKey.startswith("#"):
+                self.rawKey = "#" + self.rawKey
 
-# Getting token "userless"
-tokenUserless = TwitterIntegration.getTokenUserless()
+        self.searchEncoded = urllib.parse.quote(self.rawKey)
+        rawId = self.rawKey + "|" + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "|{}".format(randint(0, 100))
+        self.runId = hashlib.md5(rawId.encode()).hexdigest()
 
-# Get and Process Tweets
-numberOfTweets = 50
-allTweets = TweetPicker.getTweets(tokenUserless, rawKey, numberOfTweets, searchEncoded, runId)
+        self.tweets = []
 
-allTweets = PreProcessing.run(allTweets)
+        self.tweetPicker = TweetPicker()
+        self.preProcessing = PreProcessing()
+        # self.spamFiltering = SpamFiltering()
+        self.sentimentClassifier = SentimentClassifier()
 
-allTweets = SpamFiltering.run(allTweets)
+    def run(self):
 
-sentiments = SentimentClassifier.run(allTweets)
+        # Get and Process Tweets
+        numberOfTweets = 50
+        self.tweets = self.tweetPicker.getTweets(self.rawKey, numberOfTweets, self.searchEncoded, self.runId)
 
-# TODO -> How we should display this? (Current: JSON)
-print(sentiments)
+        for tweet in self.tweets:
+            self.preProcessing.run(tweet)
+            print(tweet.preprocessedTweet)
+            # self.spamFiltering.run(tweet)
+
+            if tweet.spam:
+                self.sentimentClassifier.run(tweet)
+                # print(tweet.sentiment)
+                # TODO -> How we should display this?
+
+
+Main("WinterIsHere").run()

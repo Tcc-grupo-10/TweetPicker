@@ -1,16 +1,19 @@
-from Services import TweetCleaner, SpellCheck
-from Databases import Database
+#from Databases import Database
+from Services.TweetCleaner import TweetCleaner
+from Services.SpellCheck import SpellCheck
 
 
-def run(allTweets):
+class PreProcessing(object):
 
-    for tweet in allTweets:
-        cleanTweet = TweetCleaner.processTweet(tweet["text"])
-        spellCheck = SpellCheck.processTweet(cleanTweet)
+    def __init__(self):
+        self.tweetCleaner = TweetCleaner()
+        self.spellCheck = SpellCheck()
 
-        tweet["clean_text"] = spellCheck
-        tweet["raw_tweet"] = False
-        tweet["preprocessed_tweet"] = True
-        Database.updateItem(tweet, Database.rawTweets)
+    def run(self, tweet):
 
-    return allTweets
+        cleanTweet = self.tweetCleaner.processTweet(tweet.rawTweet)
+        spellCheck = self.spellCheck.processTweet(cleanTweet)
+
+        tweet.preprocessedTweet = spellCheck
+        # TODO -> just insert the clean_tweet field
+        # Database.updateItem(tweet, Database.rawTweets)

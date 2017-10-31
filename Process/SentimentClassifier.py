@@ -1,6 +1,8 @@
+class SentimentClassifier:
 
-def run():
+    def __init__(self):
+        print("")
 
-
-    pass
+    def run(self, tweet):
+        tweet.sentiment = "Feliz"
 

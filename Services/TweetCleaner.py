@@ -3,45 +3,46 @@ import xml.etree.ElementTree
 import emoji
 from unidecode import unidecode
 
-def removeTags(text):
 
-    try:
-        text = ''.join(xml.etree.ElementTree.fromstring("<p>" + text + "</p>").itertext())
-    finally:
-        return text
+class TweetCleaner(object):
 
+    def removeTags(self, text):
 
-def processTweet(tweet):
-    tweet = emoji.demojize(tweet, delimiters=(" :", ": "))
+        try:
+            text = ''.join(xml.etree.ElementTree.fromstring("<p>" + text + "</p>").itertext())
+        finally:
+            return text
 
-    # To unicode
-    tweet = unidecode(tweet)
-    tweet = tweet.encode(tweet, 'utf-8')
+    def processTweet(self, tweetraw):
+        tweet = emoji.demojize(tweetraw, delimiters=(" :", ": "))
 
-    # Convert to lower case
-    tweet = tweet.lower()
-    # Convert www.* or https?://* to URL
-    tweet = re.sub('((www\.[^\s]+)|(https?:/[^\s]+))', '', tweet)
-    # Removing \n
-    tweet = tweet.replace('\n', ' ')
-    # Convert @username to AT_USER
-    tweet = re.sub('@[^\s]+', 'AT_USER', tweet)
-    # Remove additional white spaces
-    tweet = re.sub('[\s]+', ' ', tweet)
-    # Replace #word with word
-    tweet = re.sub(r'#([^\s]+)', r'\1', tweet)
-    # Trim
-    tweet = tweet.strip()
+        # To unicode
+        tweet = unidecode(tweet)
 
-    #Removing HTML tags
-    tweet = removeTags(tweet)
+        # Convert to lower case
+        tweet = tweet.lower()
+        # Convert www.* or https?://* to URL
+        tweet = re.sub('((www\.[^\s]+)|(https?:/[^\s]+))', '', tweet)
+        # Removing \n
+        tweet = tweet.replace('\n', ' ')
+        # Convert @username to AT_USER
+        tweet = re.sub('@[^\s]+', 'AT_USER', tweet)
+        # Remove additional white spaces
+        tweet = re.sub('[\s]+', ' ', tweet)
+        # Replace #word with word
+        tweet = re.sub(r'#([^\s]+)', r'\1', tweet)
+        # Trim
+        tweet = tweet.strip()
 
-    # Replacing unknown chars
-    tweet = tweet.replace('[?]', '')
-    tweet = tweet.replace('&amp;', '&')
-    tweet = tweet.replace('&lt;', '<')
-    tweet = tweet.replace('&gt;', '>')
+        #Removing HTML tags
+        tweet = self.removeTags(tweet)
 
-    # encontrar uma lib que possa fazer essa substituição
+        # Replacing unknown chars
+        tweet = tweet.replace('[?]', '')
+        tweet = tweet.replace('&amp;', '&')
+        tweet = tweet.replace('&lt;', '<')
+        tweet = tweet.replace('&gt;', '>')
 
-    return tweet
+        # encontrar uma lib que possa fazer essa substituição
+
+        return tweet
