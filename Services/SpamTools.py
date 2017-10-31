@@ -56,11 +56,9 @@ def getStopwords(swActive):
         return []
 
 def getFeatureList():
-    arr = []
-    file = open('../Etc/featureVector.txt', 'r')
-    for line in file:
-        arr.append(line)
-    return arr
+    file = open('Etc/featureVector.txt', 'r')
+    line = eval(file.readline())
+    return line
 
 
 def updateVector(features, featureVector):
@@ -92,14 +90,20 @@ def getTweetFeatureVector(tweet, feature_list):
     for feature in feature_list:
         if feature in tweet:
             features.append(feature)
-    return " ".join(features)
+
+    print("features: {}".format(features))
+    return features
+
+
+def getTweetFeatureVectorString(tweet, feature_list):
+    return " ".join(getTweetFeatureVector(tweet, feature_list))
 
 
 def save_sparse_csr(array):
-    np.savez('../Etc/trainingTest2.npz', data=array.data, indices=array.indices,
+    np.savez('Etc/trainingTest2.npz', data=array.data, indices=array.indices,
              indptr=array.indptr, shape=array.shape)
 
 
 def load_sparse_csr():
-    loader = np.load('../Etc/trainingTest2.npz')
+    loader = np.load('Etc/trainingTest2.npz')
     return csr_matrix((loader['data'], loader['indices'], loader['indptr']), shape=loader['shape'])

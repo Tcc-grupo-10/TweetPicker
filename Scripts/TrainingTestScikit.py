@@ -74,7 +74,7 @@ for obj in geten:
     tweets.append(ww)
     targ.append(spam)
 
-featureVector = removeFrequencyFromVector(1)
+featureVector = removeFrequencyFromVector(0)
 tweets = removeFrequencyFromTweets()
 print(featureVector)
 
@@ -105,11 +105,15 @@ training_set = load_sparse_csr()
 docs_new = ['are we sure this season is', 'never change, bronn', 'remembering the last episode is in 30 minutes', 'hound was looking for a']
 docs_processed = []
 for nd in docs_new:
-    docs_processed.append(SpamTools.getTweetFeatureVector(nd, featureVector))
+    docs_processed.append(SpamTools.getTweetFeatureVectorString(nd, featureVector))
 
 print("docs_processed: {}".format(docs_processed))
 
-X_new_counts = count_vect.transform(docs_processed)
+# TODO -> Era isso aqui que eu não tinha colocado na poc
+"""count_vect = CountVectorizer()
+count_vect.fit_transform(tweets)"""
+
+X_new_counts = count_vect.transform(docs_new)
 X_new_tfidf = tfidf_transformer.transform(X_new_counts)
 
 
