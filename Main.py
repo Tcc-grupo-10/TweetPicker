@@ -6,7 +6,7 @@ from random import randint
 from Process.TweetPicker import TweetPicker
 from Process.PreProcessing import PreProcessing
 from Process.SpamFiltering import SpamFiltering
-# from Process.SentimentClassifier import SentimentClassifier
+from Classifier.sentimentClassifier import SentimentClassifier
 from Services import TwitterIntegration
 
 
@@ -28,7 +28,7 @@ class Main(object):
         self.tweetPicker = TweetPicker()
         self.preProcessing = PreProcessing()
         # self.spamFiltering = SpamFiltering()
-        # self.sentimentClassifier = SentimentClassifier()
+        self.sentimentClassifier = SentimentClassifier()
 
     def run(self):
 
@@ -41,9 +41,9 @@ class Main(object):
             print(tweet.preprocessedTweet)
             # self.spamFiltering.run(tweet)
 
-            if tweet.spam:
-                # self.sentimentClassifier.run(tweet)
-                # print(tweet.sentiment)
+            if not tweet.isSpam:
+                self.sentimentClassifier.run(tweet)
+                print(tweet.sentiment)
                 # TODO -> How we should display this?
 
 

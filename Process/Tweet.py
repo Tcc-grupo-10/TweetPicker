@@ -4,4 +4,4 @@ class Tweet(object):
         self.rawTweet = raw_tweet
         self.preprocessedTweet = None
         self.sentiment = None
-        self.spam = False
+        self.isSpam = False
