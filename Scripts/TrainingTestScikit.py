@@ -59,12 +59,10 @@ def removeFrequencyFromTweets():
 
 for obj in geten:
 
-    if i % 3 == 0:
-        spam = "spamA"
-    elif i % 3 == 1:
-        spam = "spamB"
+    if i % 2 == 0:
+        spam = True
     else:
-        spam = "batata"
+        spam = False
 
     i = i + 1
 
@@ -99,6 +97,9 @@ f.write(str(targ))
 
 f = open('../Etc/featureVector.txt', 'w')
 f.write(str(featureVector))
+
+f = open('../Etc/tweetsTraining.txt', 'w')
+f.write(str(tweets))
 
 training_set = load_sparse_csr()
 

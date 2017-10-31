@@ -34,10 +34,9 @@ class Main(object):
         # Get and Process Tweets
         numberOfTweets = 50
         # TODO -> Uncomment after the spamFix, its working
-        #self.tweets = self.tweetPicker.getTweets(self.rawKey, numberOfTweets, self.searchEncoded, self.runId)
-        from Process.Tweet import Tweet
-        self.tweets = [Tweet("well it's time to pull out the hat and gloves. :wind_face: :person_shrugging: :medium-light_skin_tone: :female_sign:  :sleepy_face: winterishere")]
-
+        self.tweets = self.tweetPicker.getTweets(self.rawKey, numberOfTweets, self.searchEncoded, self.runId)
+        """from Process.Tweet import Tweet
+        self.tweets = [Tweet("well it's time to pull out the hat and gloves. :wind_face: :person_shrugging: :medium-light_skin_tone: :female_sign:  :sleepy_face: winterishere")]"""
 
         for tweet in self.tweets:
             self.preProcessing.run(tweet)

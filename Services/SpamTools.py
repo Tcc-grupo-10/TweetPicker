@@ -90,8 +90,6 @@ def getTweetFeatureVector(tweet, feature_list):
     for feature in feature_list:
         if feature in tweet:
             features.append(feature)
-
-    print("features: {}".format(features))
     return features
 
 

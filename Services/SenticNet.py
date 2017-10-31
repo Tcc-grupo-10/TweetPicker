@@ -31,5 +31,3 @@ class SenticNet(object):
             infos.append(info)
             print("{}: {}".format(concept, info))
         return infos
-
-# SenticNet().getInfoList(["go_market", "fresh_fruit", "bad_feeling", "dont_know"])

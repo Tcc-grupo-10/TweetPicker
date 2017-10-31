@@ -6,7 +6,7 @@ class SpamFiltering(object):
     def __init__(self):
         self.spamSet = SpamSet()
 
-    def setAsSpam(self, tweet_id):
+    def setAsSpam(self, tweet):
         """Database.rawTweets.update_item(
             Key={'tweet_id': tweet_id},
             UpdateExpression="set is_spam=:s",
@@ -15,14 +15,11 @@ class SpamFiltering(object):
             },
             ReturnValues="UPDATED_NEW"
         )"""
+        tweet.isSpam = True
 
     def run(self, tweet):
         classifyResult = self.spamSet.classifyTweet(tweet.preprocessedTweet)
-        isSpam = self.thisIsSpam(classifyResult)
 
-        """if isSpam:
-            setAsSpam(tweet["tweet_id"])"""
+        if classifyResult:
+            self.setAsSpam(tweet)
 
-    def thisIsSpam(self, classifyResult):
-        # print(classifyResult)
-        return False
