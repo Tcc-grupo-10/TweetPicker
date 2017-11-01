@@ -28,9 +28,12 @@ class Emojinator(object):
     def get_feeling(self, emojiStr):
         emoj = emoji.emojize(emojiStr)
 
-        sentiment = self.emojiFeelings[emoj]
-        print("{} -> {}".format(emoj, sentiment))
-        return sentiment
+        try:
+            sentiment = self.emojiFeelings[emoj]
+            print("{} -> {}".format(emoj, sentiment))
+            return sentiment
+        except:
+            return 0
 
     def get_feelings(self, emojis):
         feelings = []
