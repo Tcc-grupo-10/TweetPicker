@@ -7,7 +7,7 @@ class Tweet(object):
         self.author_id = status.get("user", {"id_str": "user_not_found"}).get("id_str", "no_id")
         self.number_of_favorites = status.get("favorite_count", 0)
         self.number_of_rts = status.get("retweet_count", 0)
-        self.id =  status.get("id_str")
+        self.id = status.get("id_str")
         self.search_key = search_key
         self.run_id = run_id
 
