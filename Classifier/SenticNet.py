@@ -44,6 +44,7 @@ class SenticNet(object):
             sentiment_avg['attention'] += float(sentic['attention'])
             sentiment_avg['sensitivity'] += float(sentic['sensitivity'])
             sentiment_avg['aptitude'] += float(sentic['aptitude'])
+            sentiment_avg['polarity_intense'] += float(sentic['polarity_intense'])
             sentiment_avg['searched_concept'] += ", {}".format(sentic['searched_concept'])
 
         if len(concepts) > 0:
@@ -51,6 +52,7 @@ class SenticNet(object):
             sentiment_avg['attention'] /= float(len(concepts))
             sentiment_avg['sensitivity'] /= float(len(concepts))
             sentiment_avg['aptitude'] /= float(len(concepts))
+            sentiment_avg['polarity_intense'] /= float(len(concepts))
             sentiment_avg['searched_concept'] = sentiment_avg['searched_concept'].replace(", ", "", 1)
             return sentiment_avg
         else:

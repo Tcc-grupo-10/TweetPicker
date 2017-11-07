@@ -39,5 +39,3 @@ class SentimentClassifier(object):
         else:
             snAvg["emoji"] = emojisAvg
             return snAvg
-
-SentimentClassifier().run("")
