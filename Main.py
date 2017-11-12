@@ -22,8 +22,8 @@ class Main(object):
 
         self.db = DatabaseConnector()
         self.tweetPicker = TweetSearcher(self.runId, self.db)
-        self.preProcessing = PreProcessor(self.runId, self.db)
-        self.dataFormatter = DataFormatter(self.runId, self.db)
+        self.preProcessing = PreProcessor()
+        self.dataFormatter = DataFormatter()
         # self.spamFiltering = SpamFiltering(self.runId, self.db)
         # self.sentimentClassifier = SentimentClassifier(self.runId, self.db)
 
@@ -36,12 +36,22 @@ class Main(object):
 
         for tweet in self.tweets:
             print("original: " + tweet.original_tweet)
-            self.preProcessing.pre_process_tweet(tweet)
-            print("preprocessed: " + tweet.preprocessed_tweet)
-            print("emojis :" + str(tweet.emojis))
 
-            self.dataFormatter.format_data(tweet)
-            print("formatted :" + str(tweet.formatted_tweet))
+            # PreProcessing
+            (pre_processed_text, emoji_list) = self.preProcessing.pre_process_tweet(tweet.original_tweet)
+            tweet.preprocessed_tweet = pre_processed_text
+            tweet.emojis = emoji_list
+            self.db.save_preprocessed_tweet(tweet)
+            print("preprocessed: " + tweet.preprocessed_tweet)
+            print("emojis: " + str(tweet.emojis))
+
+            # Formatting
+            tweet.formatted_tweet = self.dataFormatter.format_data(tweet.preprocessed_tweet)
+            self.db.save_formatted_tweet(tweet)
+
+            
+
+            print("formatted: " + str(tweet.formatted_tweet))
             print("\n")
 
 

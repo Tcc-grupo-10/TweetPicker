@@ -2,42 +2,39 @@ import re
 import xml
 
 from unidecode import unidecode
+
 from Emojinator import Emojinator
 
 
 class PreProcessor(object):
-    def __init__(self, run_id,  db):
-        self._db = db
+    def __init__(self):
         self._emojinator = Emojinator()
 
-    def pre_process_tweet(self, tweet):
+    def pre_process_tweet(self, raw_text):
 
-        (tweet_text, emojis) = self._emojinator.get_emoji_list(tweet.original_tweet)
+        (pre_processed_text, emojis) = self._emojinator.get_emoji_list(raw_text)
 
-        tweet_text = unidecode(tweet_text)
-        tweet_text = tweet_text.lower()
+        pre_processed_text = unidecode(pre_processed_text)
+        pre_processed_text = pre_processed_text.lower()
 
-        tweet_text = self.remove_URL(tweet_text)
-        tweet_text = self.remove_white_spaces_excess(tweet_text)
-        tweet_text = self.remove_hashtags(tweet_text)
-        tweet_text = self.remove_users(tweet_text)
+        pre_processed_text = self.remove_URL(pre_processed_text)
+        pre_processed_text = self.remove_white_spaces_excess(pre_processed_text)
+        pre_processed_text = self.remove_hashtags(pre_processed_text)
+        pre_processed_text = self.remove_users(pre_processed_text)
 
         # Removing HTML tags
-        tweet_text = self.removeTags(tweet_text)
+        pre_processed_text = self.removeTags(pre_processed_text)
 
         # Replacing unknown chars
-        tweet_text = tweet_text.replace('[?]', '')
-        tweet_text = tweet_text.replace('&amp;', '&')
-        tweet_text = tweet_text.replace('&lt;', '<')
-        tweet_text = tweet_text.replace('&gt;', '>')
+        pre_processed_text = pre_processed_text.replace('[?]', '')
+        pre_processed_text = pre_processed_text.replace('&amp;', '&')
+        pre_processed_text = pre_processed_text.replace('&lt;', '<')
+        pre_processed_text = pre_processed_text.replace('&gt;', '>')
 
+        pre_processed_text = self.use_white_spaces_as_delimiters(pre_processed_text)
 
-        tweet_text = self.use_white_spaces_as_delimiters(tweet_text)
+        return pre_processed_text, emojis
 
-        tweet.preprocessed_tweet = tweet_text
-        tweet.emojis = emojis
-
-        self._db.save_preprocessed_tweet(tweet)
 
     def remove_users(self, text):
         text = re.sub('@[^\s]+', 'AT_USER', text)

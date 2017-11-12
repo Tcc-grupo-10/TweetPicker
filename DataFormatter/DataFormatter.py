@@ -4,19 +4,17 @@ from DataFormatter.SpellChecker import SpellChecker
 
 
 class DataFormatter(object):
-    def __init__(self, run_id, db):
+    def __init__(self):
         self.spell_checker = SpellChecker()
-        self.db = db
 
-    def format_data(self, tweet):
-        formatted_text = tweet.preprocessed_tweet
+    def format_data(self, preprocessed_text):
+        formatted_text = preprocessed_text
         formatted_text = self.remove_abreviations(formatted_text)
         formatted_text = self.remove_repeated_char(formatted_text)
         formatted_text = self.spell_checker.spell_check(formatted_text)
 
-        tweet.formatted_tweet = formatted_text
+        return formatted_text
 
-        self.db.save_formatted_tweet(tweet)
 
     def remove_abreviations(self, text):
         dictionary = {
@@ -270,5 +268,6 @@ class DataFormatter(object):
     def remove_repeated_char(self, text):
         text = re.sub(r'(\w)\1{3,}', r'\1\1\1', text)
         return text
+
 
 
