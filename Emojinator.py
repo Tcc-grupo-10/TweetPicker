@@ -17,7 +17,7 @@ class Emojinator(object):
 
     def get_csv_values(self):
         ret = {}
-        with open('../Etc/Emoji_Sentiment_Data_v1.1.csv', 'r', newline='') as f:
+        with open('Etc/Emoji_Sentiment_Data_v1.1.csv', 'r', newline='') as f:
             reader = csv.DictReader(f)
             for row in reader:
                 score = float(row["Sentiment Score"]) / 1000
