@@ -40,8 +40,9 @@ class Main(object):
 
             # PreProcessing
             (pre_processed_text, emoji_list) = self.preProcessing.pre_process_tweet(tweet.original_tweet)
-            tweet.preprocessed_tweet = pre_processed_text
             tweet.emojis = emoji_list
+            tweet.preprocessed_tweet = self.dataFormatter.format_data(pre_processed_text)
+
             self.db.save_preprocessed_tweet(tweet)
             print("preprocessed: " + tweet.preprocessed_tweet)
             print("emojis: " + str(tweet.emojis))
