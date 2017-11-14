@@ -1,35 +1,36 @@
-import urllib
 import hashlib
 import datetime
 
+from Classifier.sentimentClassifier import SentimentClassifier
 from DataFormatter.DataFormatter import DataFormatter
 from Database.DatabaseConnector import DatabaseConnector
-# from Process import TweetPicker, SpamFiltering, PreProcessing, SentimentClassifier
-# from Services import TwitterIntegration
 from PreProcessor.PreProcessor import PreProcessor
 from TweetPicker.TweetSearcher import TweetSearcher
 
 
 class Main(object):
-    def __init__(self, search_key):
+    def __init__(self, search_key, interface):
         print("Initializing Process...")
         self.search_key = search_key
+        self.interface = interface
 
         rawId = self.search_key + "|" + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.runId = hashlib.md5(rawId.encode()).hexdigest()
 
         self.tweets = []
-
         self.db = DatabaseConnector()
-        self.tweetPicker = TweetSearcher(self.runId, self.db)
+
+        self.tweetPicker = TweetSearcher(self.runId, self.db, self.interface)
         self.preProcessing = PreProcessor()
         self.dataFormatter = DataFormatter()
+
         # self.spamFiltering = SpamFiltering(self.runId, self.db)
         # self.sentimentClassifier = SentimentClassifier(self.runId, self.db)
 
     def run(self):
         # Get and Process Tweets
         numberOfTweets = 10
+        self.interface.log("Pegando {} Tweets sobre \"{}\"".format(numberOfTweets, self.search_key))
         # TODO -> Uncomment after the spamFix, its working
 
         self.tweets = self.tweetPicker.search_tweets(self.search_key, numberOfTweets)
@@ -53,7 +54,3 @@ class Main(object):
 
             print("formatted: " + str(tweet.formatted_tweet))
             print("\n")
-
-
-
-Main("tbt").run()
