@@ -74,42 +74,63 @@ class SpamSet(object):
 
         print("Aprendeu: {}".format(datetime.datetime.now()))
 
-    def predict_nb(self, text):
-        docs_processed = [Tools.getTweetFeatureVector(text, self.featureVector)]
-
-        X_new_counts = self.count_vect.transform(docs_processed)
-        X_new_tfidf = self.tfidf_transformer.transform(X_new_counts)
-
+    def predict_nb(self, X_new_tfidf):
         clf = MultinomialNB().fit(self.train_set, self.isSpamList)
         predicted = clf.predict(X_new_tfidf)
 
-        return predicted[0]
+        return predicted
 
-    def predict_svm(self, text):
-        docs_processed = [Tools.getTweetFeatureVector(text, self.featureVector)]
+    def predict_svm(self, X_new_tfidf):
+        clf = SVC().fit(self.train_set, self.isSpamList)
+        predicted = clf.predict(X_new_tfidf)
+
+        return predicted
+
+    def predict_all(self):
+
+        """m = multiprocessing.Manager()
+        self.queue = m.Queue()
+        _thread.start_new_thread(self.queue_worker, ())"""
+
+        """executor = concurrent.futures.ProcessPoolExecutor(10)
+        futures = [executor.submit(self.predict_item, item) for item in enumerate(self.testData)]
+        concurrent.futures.wait(futures)"""
+
+        self.predict_item(self.testData)
+
+    def predict_item(self, tweets):
+
+        file_name = '../Etc/sw_{}_ng_{}_fr_{}.csv'.format(self.useStopwords, self.nGram, self.frequencyMin)
+        file_writer = csv.writer(open(file_name, 'w', newline=''))
+        file_writer.writerow(["tweet_id", "tweet", "original", "NB", "SVM"])
+
+        print("docs_processed init: {}".format(datetime.datetime.now()))
+        docs_processed = []
+        for nd in tweets:
+            docs_processed.append(Tools.getTweetFeatureVector(nd, self.featureVector))
+        print("docs_processed end: {}".format(datetime.datetime.now()))
 
         X_new_counts = self.count_vect.transform(docs_processed)
         X_new_tfidf = self.tfidf_transformer.transform(X_new_counts)
 
-        clf = SVC().fit(self.train_set, self.isSpamList)
-        predicted = clf.predict(X_new_tfidf)
+        print("transforms: {}".format(datetime.datetime.now()))
 
-        return predicted[0]
+        nb = self.predict_nb(X_new_tfidf)
+        print("nb: {}".format(datetime.datetime.now()))
+        svm = self.predict_svm(X_new_tfidf)
+        print("svm: {}".format(datetime.datetime.now()))
 
-    def predict_all(self):
-        m = multiprocessing.Manager()
-        self.queue = m.Queue()
-        _thread.start_new_thread(self.queue_worker, ())
+        print("nb_: {}".format(nb))
+        print("svm: {}".format(svm))
 
-        executor = concurrent.futures.ProcessPoolExecutor(10)
-        futures = [executor.submit(self.predict_item, item) for item in enumerate(self.testData)]
-        concurrent.futures.wait(futures)
-
-    def predict_item(self, tweet):
-        nb = self.predict_nb(tweet[1][0])
-        svm = self.predict_svm(tweet[1][0])
-        print("{} - original: {}| nb: {}| svm: {}".format(tweet[0], tweet[1][1], nb, svm))
-        self.queue.put((tweet[1], nb, svm))
+        for tweet, n, s in zip(tweets, nb, svm):
+            print("original: {}| nb: {}| svm: {}".format(tweet[1], n, s))
+            # self.queue.put((tweet[1], nb, svm))
+            file_writer.writerow([tweet[2],
+                                  tweet[0],
+                                  tweet[1],
+                                  n,
+                                  s])
 
     def save_in_csv(self, tweet_results, file_writer):
         file_writer.writerow([tweet_results[0][2],
@@ -161,7 +182,16 @@ class SpamSet(object):
                 self.trainData.append((text, label))
 
 
-ss = SpamSet()
-ss.predict_all()
+ss1 = SpamSet(useStopwords=True, nGram=1, frequencyMin=1)
+ss1.predict_all()
+
+"""ss2 = SpamSet(useStopwords=False, nGram=1, frequencyMin=1)
+ss2.predict_all()
+
+ss3 = SpamSet(useStopwords=True, nGram=2, frequencyMin=1)
+ss3.predict_all()
+
+ss4 = SpamSet(useStopwords=False, nGram=2, frequencyMin=1)
+ss4.predict_all()"""
 
 print("Fim: {}".format(datetime.datetime.now()))
