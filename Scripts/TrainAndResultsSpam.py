@@ -68,9 +68,7 @@ class SpamSet(object):
         print("Removing Frequency From Tweets: {}".format(datetime.datetime.now()))
 
         self.X_train_counts = self.count_vect.fit_transform(self.tweets)
-        print("X_train_counts Done: {}".format(datetime.datetime.now()))
         self.train_set = self.tfidf_transformer.fit_transform(self.X_train_counts)
-        print("train_set Done: {}".format(datetime.datetime.now()))
 
         print("Aprendeu: {}".format(datetime.datetime.now()))
 
@@ -104,21 +102,17 @@ class SpamSet(object):
         file_writer = csv.writer(open(file_name, 'w', newline=''))
         file_writer.writerow(["tweet_id", "tweet", "original", "NB", "SVM"])
 
-        print("docs_processed init: {}".format(datetime.datetime.now()))
         docs_processed = []
         for nd in tweets:
-            docs_processed.append(Tools.getTweetFeatureVector(nd, self.featureVector))
+            docs_processed.append(Tools.getTweetFeatureVector(nd[0], self.featureVector))
         print("docs_processed end: {}".format(datetime.datetime.now()))
 
         X_new_counts = self.count_vect.transform(docs_processed)
         X_new_tfidf = self.tfidf_transformer.transform(X_new_counts)
-
         print("transforms: {}".format(datetime.datetime.now()))
 
         nb = self.predict_nb(X_new_tfidf)
-        print("nb: {}".format(datetime.datetime.now()))
         svm = self.predict_svm(X_new_tfidf)
-        print("svm: {}".format(datetime.datetime.now()))
 
         print("nb_: {}".format(nb))
         print("svm: {}".format(svm))
