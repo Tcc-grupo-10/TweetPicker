@@ -11,7 +11,7 @@ class DataFormatter(object):
         formatted_text = preprocessed_text
         formatted_text = self.remove_abreviations(formatted_text)
         formatted_text = self.remove_repeated_char(formatted_text)
-        formatted_text = self.spell_checker.spell_check(formatted_text)
+        # formatted_text = self.spell_checker.spell_check(formatted_text)
 
         return formatted_text
 

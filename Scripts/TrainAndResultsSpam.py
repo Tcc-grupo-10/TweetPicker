@@ -1,6 +1,9 @@
+import concurrent.futures
 import csv
 import datetime
+import multiprocessing
 
+import _thread
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.svm import SVC
 
@@ -13,8 +16,7 @@ from SpamFilter import Tools
 
 
 class SpamSet(object):
-
-    def __init__(self, useStopwords = True, nGram = 2, frequencyMin = 1):
+    def __init__(self, useStopwords=True, nGram=2, frequencyMin=1):
 
         print("Inicio: {}".format(datetime.datetime.now()))
 
@@ -34,6 +36,9 @@ class SpamSet(object):
         self.load_test_csv()
         self.load_train_csv()
 
+        self.queue = None
+        self.csv_file_writer = None
+
         # predict vars
         self.train_set = []
         self.isSpamList = []
@@ -42,7 +47,6 @@ class SpamSet(object):
         self.tfidf_transformer = TfidfTransformer()
 
         self.learn()
-
 
     def learn(self):
 
@@ -93,17 +97,41 @@ class SpamSet(object):
         return predicted[0]
 
     def predict_all(self):
-        f = csv.writer(open('../Etc/sw_{}_ng_{}_fr_{}.csv'.format(self.useStopwords, self.nGram, self.frequencyMin), 'w', newline=''))
-        f.writerow(["tweet_id", "tweet", "original", "NB", "SVM"])
-        for x in self.testData:
-            nb = self.predict_nb(x[0])
-            svm = self.predict_svm(x[0])
-            print("original: {}| nb: {}| svm: {}".format(x[1], nb, svm))
-            f.writerow([x[2],
-                        x[0],
-                        x[1],
-                        nb,
-                        svm])
+        m = multiprocessing.Manager()
+        self.queue = m.Queue()
+        _thread.start_new_thread(self.queue_worker, ())
+
+        executor = concurrent.futures.ProcessPoolExecutor(10)
+        futures = [executor.submit(self.predict_item, item) for item in enumerate(self.testData)]
+        concurrent.futures.wait(futures)
+
+    def predict_item(self, tweet):
+        nb = self.predict_nb(tweet[1][0])
+        svm = self.predict_svm(tweet[1][0])
+        print("{} - original: {}| nb: {}| svm: {}".format(tweet[0], tweet[1][1], nb, svm))
+        self.queue.put((tweet[1], nb, svm))
+
+    def save_in_csv(self, tweet_results, file_writer):
+        file_writer.writerow([tweet_results[0][2],
+                              tweet_results[0][0],
+                              tweet_results[0][1],
+                              tweet_results[1],
+                              tweet_results[2]])
+
+    def queue_worker(self):
+        file_name = '../Etc/sw_{}_ng_{}_fr_{}.csv'.format(self.useStopwords, self.nGram, self.frequencyMin)
+        file_writer = csv.writer(open(file_name, 'w', newline=''))
+        while True:
+            try:
+                if not self.queue.empty():
+                    item = self.queue.get()
+                    if item is None:
+                        break
+                    self.save_in_csv(item, file_writer)
+                    self.queue.task_done()
+            except:
+                print("Queue Error!!!!!")
+                break
 
     def load_test_csv(self):
         with open('../Etc/teste.csv', 'rt', encoding="utf8") as f:
@@ -115,7 +143,7 @@ class SpamSet(object):
                 label = row["label"].strip()
 
                 (text, emojis) = self.preProcessing.pre_process_tweet(text)
-                # text = self.dataFormatter.format_data(text)
+                text = self.dataFormatter.format_data(text)
 
                 self.testData.append((text, label, id))
 
@@ -128,7 +156,7 @@ class SpamSet(object):
                 label = row["label"].strip()
 
                 (text, emojis) = self.preProcessing.pre_process_tweet(text)
-                # text = self.dataFormatter.format_data(text)
+                text = self.dataFormatter.format_data(text)
 
                 self.trainData.append((text, label))
 
