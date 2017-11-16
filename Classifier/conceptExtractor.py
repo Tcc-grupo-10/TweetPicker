@@ -10,12 +10,12 @@ class ConceptExtractor(object):
         java_path = "C:\Program Files (x86)\Java\jdk1.8.0_152"
         os.environ['JAVAHOME'] = java_path
 
-        parser_jar_path = 'C:\\Users\\pezoti\Documents\\apis\\stanford-parser-full-2017-06-09\\stanford-parser.jar'
-        parser_models_path = 'C:\\Users\\pezoti\Documents\\apis\\stanford-parser-full-2017-06-09\\stanford-parser-3.8.0-models.jar'
+        parser_jar_path = 'Etc/stanford-parser.jar'
+        parser_models_path = 'Etc/stanford-parser-3.8.0-models.jar'
         self.parser = StanfordParser(parser_jar_path, parser_models_path)
 
         self.stop_words = []
-        file = open('../Etc/stopwords.txt', 'r')
+        file = open('Etc/stopwords.txt', 'r')
         for line in file:
             line = line.strip("\n")
             self.stop_words.append(line)
@@ -28,23 +28,24 @@ class ConceptExtractor(object):
 
     def extract_list_of_event_concepts(self,
                                        tweet_text="Game Of Thrones is awesome"):
-        print("text: " + tweet_text)
+        # print("text: " + tweet_text)
 
         list_of_concepts = []
         list_of_np_and_parent_nodes = []
         tweet_tree = list(self.parser.raw_parse(tweet_text))[0]
-        tweet_tree.draw()
+        # tweet_tree.draw()
         sentence_list = list(tweet_tree.subtrees(lambda x: (x.label().startswith("S") and x.label() != "SYM")))
-        print("number of sentences" + str(len(sentence_list)))
+        # print("number of sentences" + str(len(sentence_list)))
         if len(sentence_list) != 0:
             for sentence in sentence_list:
-                print(sentence)
+                ""
+                # print(sentence)
             for sentence in sentence_list:
                 list_of_np_and_parent_nodes.extend(self.get_list_of_np_and_parents(sentence, [], []))
         else:
             list_of_np_and_parent_nodes.extend(self.get_list_of_np_and_parents(tweet_tree, [], []))
 
-        print(list_of_np_and_parent_nodes)
+        # print(list_of_np_and_parent_nodes)
         list_of_np_and_verbs = [self.get_np_and_verb(np) for np in list_of_np_and_parent_nodes]
         lemmatized_list_of_np_and_verbs = []
         for np, verb in list_of_np_and_verbs:
@@ -70,9 +71,9 @@ class ConceptExtractor(object):
         for np, verb in lemmatized_list_of_np_and_verbs:
             object_concepts = self.extract_list_of_object_concepts(np)
             for object_concept in object_concepts:
-                list_of_concepts.append(verb + " " + object_concept)
+                list_of_concepts.append(verb + "_" + object_concept)
 
-        print("list of concepts: " + str(list_of_concepts))
+        # print("list of concepts: " + str(list_of_concepts))
         return list_of_concepts
 
     def extract_list_of_object_concepts(self, noun_phrase):
@@ -87,17 +88,17 @@ class ConceptExtractor(object):
                     bigram = [word, noun_phrase[index + 1]]
                     if not (bigram[0][0] in self.stop_words and bigram[1][0] in self.stop_words):
                         if (bigram[0][1] in self.ADJ) and (bigram[1][1] in self.NOUN):
-                            list_of_object_concepts.append(bigram[0][0] + " " + bigram[1][0])
+                            list_of_object_concepts.append(bigram[0][0] + "_" + bigram[1][0])
                             list_of_object_concepts.append(bigram[1][0])
                         elif (bigram[0][1] in self.NOUN) and (bigram[1][1] in self.NOUN):
-                            list_of_object_concepts.append(bigram[0][0] + " " + bigram[1][0])
+                            list_of_object_concepts.append(bigram[0][0] + "_" + bigram[1][0])
                         elif (bigram[0][0] in self.stop_words) and (bigram[1][1] in self.NOUN):
                             list_of_object_concepts.append(bigram[1][0])
                         elif (bigram[0][1] in self.NOUN) and (bigram[1][0] in self.stop_words):
                             list_of_object_concepts.append(bigram[0][0])
                         elif not (bigram[0][1] in self.ADJ and (bigram[1][0] in self.stop_words)) and not (
                                         bigram[0][0] in self.stop_words and (bigram[1][1] in self.ADJ)):
-                            list_of_object_concepts.append(bigram[0][0] + " " + bigram[1][0])
+                            list_of_object_concepts.append(bigram[0][0] + "_" + bigram[1][0])
 
                             # print(list_of_object_concepts)
         return list_of_object_concepts

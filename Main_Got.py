@@ -24,7 +24,7 @@ class Main_Got(object):
         self.dataFormatter = DataFormatter()
 
         self.spamFilter = SpamFilter()
-        # self.sentimentClassifier = SentimentClassifier(self.runId, self.db)
+        self.sentimentClassifier = SentimentClassifier()
 
     def run(self):
 
@@ -53,7 +53,12 @@ class Main_Got(object):
         for tw, spam in zip(self.tweets, spam_list):
             tw["is_spam"] = spam
 
-        print(self.tweets)
+        # TODO -> Use this later
+        # without_spam = list(filter(lambda x: x["is_spam"] == "0", self.tweets))
+
+        for tweet in self.tweets:
+            tweet["sentiment"] = self.sentimentClassifier.run(tweet["formatted_tweet"], tweet["emojis"])
+
 
     def load_got_tweets(self):
         return DatabaseConnector("UnTweeterize").get_all()

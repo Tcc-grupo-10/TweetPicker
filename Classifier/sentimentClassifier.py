@@ -9,18 +9,12 @@ class SentimentClassifier(object):
         self.senticNet = SenticNet()
         self.emojinator = Emojinator()
 
-    def run(self, tweet):
-        # concept_extractor = ConceptExtractor()
-        #tweet = "i just love brown. gots7"
-        # concept_extractor.extract_list_of_event_concepts(tweet.preprocessedTweet)
-        #concept_extractor.extract_list_of_object_concepts()
-
-        # TODO -> get concepts from concept_extractor
-        concepts = ["go_market", "fresh_fruit", "bad_feeling", "dont_know"]
+    def run(self, tweet_text, emojis):
+        concept_extractor = ConceptExtractor()
+        concepts = concept_extractor.extract_list_of_event_concepts(tweet_text)
 
         sentic_net_sentiments = self.senticNet.getInfoList(concepts)
-        # emojis_sentiments = self.emojinator.get_feelings(tweet.emojis)
-        emojis_sentiments = self.emojinator.get_feelings([":thumbs_up:", ":hushed_face:", ":broken_heart:"])
+        emojis_sentiments = self.emojinator.get_feelings(emojis)
 
         calc_sentiments = self.calc_feelings(sentic_net_sentiments, emojis_sentiments)
         print("calc_sentiments: {}".format(calc_sentiments))
