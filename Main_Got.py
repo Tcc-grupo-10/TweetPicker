@@ -6,6 +6,7 @@ from Classifier.sentimentClassifier import SentimentClassifier
 from DataFormatter.DataFormatter import DataFormatter
 from Database.DatabaseConnector import DatabaseConnector
 from PreProcessor.PreProcessor import PreProcessor
+from SpamFilter.SpamFilter import SpamFilter
 from TweetPicker.TweetSearcher import TweetSearcher
 
 
@@ -22,7 +23,7 @@ class Main_Got(object):
         self.preProcessing = PreProcessor()
         self.dataFormatter = DataFormatter()
 
-        # self.spamFiltering = SpamFiltering(self.runId, self.db)
+        self.spamFilter = SpamFilter()
         # self.sentimentClassifier = SentimentClassifier(self.runId, self.db)
 
     def run(self):
@@ -45,6 +46,14 @@ class Main_Got(object):
 
             print("formatted: " + str(tweet["formatted_tweet"]))
             print("\n")
+
+        texts = list(map(lambda x: x["formatted_tweet"], self.tweets))
+        spam_list = self.spamFilter.predict_items(texts)
+
+        for tw, spam in zip(self.tweets, spam_list):
+            tw["is_spam"] = spam
+
+        print(self.tweets)
 
     def load_got_tweets(self):
         return DatabaseConnector("UnTweeterize").get_all()

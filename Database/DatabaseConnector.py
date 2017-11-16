@@ -62,10 +62,10 @@ class DatabaseConnector(object):
         allTweets = response['Items']
         print(len(allTweets))
 
-        while 'LastEvaluatedKey' in response:
+        """while 'LastEvaluatedKey' in response:
             response = self._table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
             allTweets.extend(response['Items'])
-            print(len(allTweets))
+            print(len(allTweets))"""
 
         return allTweets
 

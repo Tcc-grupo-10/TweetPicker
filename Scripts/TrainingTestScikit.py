@@ -100,6 +100,9 @@ f.write(str(targ))
 f = open('../Etc/featureVector.txt', 'w')
 f.write(str(featureVector))
 
+f = open('../Etc/tweetsTraining.txt', 'w')
+f.write(str(tweets))
+
 training_set = load_sparse_csr()
 
 docs_new = ['are we sure this season is', 'never change, bronn', 'remembering the last episode is in 30 minutes', 'hound was looking for a']
