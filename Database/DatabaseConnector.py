@@ -57,4 +57,16 @@ class DatabaseConnector(object):
             ExpressionAttributeValues={':r': tweet.formatted_tweet}
         )
 
+    def get_all(self):
+        response = self._table.scan()
+        allTweets = response['Items']
+        print(len(allTweets))
+
+        while 'LastEvaluatedKey' in response:
+            response = self._table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
+            allTweets.extend(response['Items'])
+            print(len(allTweets))
+
+        return allTweets
+
 
