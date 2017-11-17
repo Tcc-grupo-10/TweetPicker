@@ -56,17 +56,16 @@ class SpamFilter(object):
 
     def relearn(self):
 
-        # TODO -> change this path to /SpamFilter/binaries
-        loader = np.load('Etc/trainingTest2.npz')
+        loader = np.load('SpamFilter/binaries/train_set.npz')
         self.train_set = csr_matrix((loader['data'], loader['indices'], loader['indptr']), shape=loader['shape'])
 
-        o = open('Etc/isSpamList.txt', 'r')
+        o = open('SpamFilter/binaries/isSpamList.txt', 'r')
         self.isSpamList = ast.literal_eval(o.read())
 
-        file = open('Etc/featureVector.txt', 'r')
+        file = open('SpamFilter/binaries/featureVector.txt', 'r')
         self.featureVector = ast.literal_eval(file.read())
 
-        file = open('Etc/tweetsTraining.txt', 'r')
+        file = open('SpamFilter/binaries/tweetsTraining.txt', 'r')
         tweets = ast.literal_eval(file.read())
         X_train_counts = self.count_vect.fit_transform(tweets)
         self.tfidf_transformer.fit_transform(X_train_counts)

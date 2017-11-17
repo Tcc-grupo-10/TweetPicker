@@ -4,6 +4,8 @@ import datetime
 import multiprocessing
 
 import _thread
+
+import numpy as np
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.svm import SVC
 
@@ -35,9 +37,6 @@ class SpamSet(object):
 
         self.load_test_csv()
         self.load_train_csv()
-
-        self.queue = None
-        self.csv_file_writer = None
 
         # predict vars
         self.train_set = []
@@ -85,15 +84,6 @@ class SpamSet(object):
         return predicted
 
     def predict_all(self):
-
-        """m = multiprocessing.Manager()
-        self.queue = m.Queue()
-        _thread.start_new_thread(self.queue_worker, ())"""
-
-        """executor = concurrent.futures.ProcessPoolExecutor(10)
-        futures = [executor.submit(self.predict_item, item) for item in enumerate(self.testData)]
-        concurrent.futures.wait(futures)"""
-
         self.predict_item(self.testData)
 
     def predict_item(self, tweets):
@@ -114,12 +104,15 @@ class SpamSet(object):
         nb = self.predict_nb(X_new_tfidf)
         svm = self.predict_svm(X_new_tfidf)
 
+        print("Saving Dataset: {}".format(datetime.datetime.now()))
+        self.save_dataset()
+
+
         print("nb_: {}".format(nb))
         print("svm: {}".format(svm))
 
         for tweet, n, s in zip(tweets, nb, svm):
             print("original: {}| nb: {}| svm: {}".format(tweet[1], n, s))
-            # self.queue.put((tweet[1], nb, svm))
             file_writer.writerow([tweet[2],
                                   tweet[0],
                                   tweet[1],
@@ -133,20 +126,19 @@ class SpamSet(object):
                               tweet_results[1],
                               tweet_results[2]])
 
-    def queue_worker(self):
-        file_name = '../Etc/sw_{}_ng_{}_fr_{}.csv'.format(self.useStopwords, self.nGram, self.frequencyMin)
-        file_writer = csv.writer(open(file_name, 'w', newline=''))
-        while True:
-            try:
-                if not self.queue.empty():
-                    item = self.queue.get()
-                    if item is None:
-                        break
-                    self.save_in_csv(item, file_writer)
-                    self.queue.task_done()
-            except:
-                print("Queue Error!!!!!")
-                break
+    def save_dataset(self):
+        np.savez('../SpamFilter/binaries/train_set.npz', data=self.train_set.data, indices=self.train_set.indices,
+                 indptr=self.train_set.indptr, shape=self.train_set.shape)
+
+        f = open('../SpamFilter/binaries/isSpamList.txt', 'w')
+        f.write(str(self.isSpamList))
+
+        f = open('../SpamFilter/binaries/featureVector.txt', 'w')
+        f.write(str(self.featureVector))
+
+        f = open('../SpamFilter/binaries/tweetsTraining.txt', 'w')
+        f.write(str(self.tweets))
+
 
     def load_test_csv(self):
         with open('../Etc/teste.csv', 'rt', encoding="utf8") as f:
