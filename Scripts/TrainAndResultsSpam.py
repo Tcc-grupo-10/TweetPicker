@@ -168,16 +168,7 @@ class SpamSet(object):
                 self.trainData.append((text, label))
 
 
-ss1 = SpamSet(useStopwords=True, nGram=1, frequencyMin=1)
-ss1.predict_all()
-
-"""ss2 = SpamSet(useStopwords=False, nGram=1, frequencyMin=1)
-ss2.predict_all()
-
-ss3 = SpamSet(useStopwords=True, nGram=2, frequencyMin=1)
-ss3.predict_all()
-
-ss4 = SpamSet(useStopwords=False, nGram=2, frequencyMin=1)
-ss4.predict_all()"""
+ss = SpamSet(useStopwords=True, nGram=2, frequencyMin=2)
+ss.predict_all()
 
 print("Fim: {}".format(datetime.datetime.now()))
