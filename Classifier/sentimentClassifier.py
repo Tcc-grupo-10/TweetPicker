@@ -4,7 +4,6 @@ from Emojinator import Emojinator
 
 
 class SentimentClassifier(object):
-
     def __init__(self):
         self.senticNet = SenticNet()
         self.emojinator = Emojinator()
@@ -17,19 +16,26 @@ class SentimentClassifier(object):
         emojis_sentiments = self.emojinator.get_feelings(emojis)
 
         calc_sentiments = self.calc_feelings(sentic_net_sentiments, emojis_sentiments)
-        print("calc_sentiments: {}".format(calc_sentiments))
         return calc_sentiments
 
     def calc_feelings(self, sentic_net, emojis):
 
-        emojisAvg = 0
+        emojisAvg = None
         if len(emojis) > 0:
             emojisAvg = sum(emojis) / float(len(emojis))
 
         snAvg = self.senticNet.getAvg(sentic_net)
 
         if snAvg is None:
-            return None
+
+            if emojisAvg is not None:
+                ret = {'pleasantness': "", 'attention': "", 'sensitivity': "",
+                       'aptitude': "", 'polarity_intense': "", "searched_concept": "",
+                       "emoji": emojisAvg}
+                return ret
+
+            else:
+                return None
         else:
             snAvg["emoji"] = emojisAvg
             return snAvg

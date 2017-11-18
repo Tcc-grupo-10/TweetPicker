@@ -54,24 +54,36 @@ class Main_Got(object):
         file_writer.writerow(['tweet_id', 'formatted_tweet', 'spam_label', '|', 'pleasantness', 'attention',
                               'sensitivity', 'aptitude', 'polarity_intense', 'emojis'])
 
+        i = 0
         for tw, spam in zip(self.tweets, spam_list):
+            i += 1
+
             tw["is_spam"] = spam
+            tw["sentiment"] = None
 
             if tw["is_spam"] == "0":
-                tweet["sentiment"] = self.sentimentClassifier.run(tweet["formatted_tweet"], tweet["emojis"])
+                tw["sentiment"] = self.sentimentClassifier.run(tw["formatted_tweet"], tw["emojis"])
+
+            if tw["sentiment"] is None:
+                tw["sentiment"] = {'pleasantness': "", 'attention': "", 'sensitivity': "",
+                                   'aptitude': "", 'polarity_intense': "", "searched_concept": "",
+                                   "emoji": ""}
 
             file_writer.writerow([tw['tweet_id'],
                                   tw['formatted_tweet'],
                                   tw['is_spam'],
                                   '|',
-                                  tw['sentiment'].get('pleasantness', '-'),
-                                  tw['sentiment'].get('attention', '-'),
-                                  tw['sentiment'].get('sensitivity', '-'),
-                                  tw['sentiment'].get('aptitude', '-'),
-                                  tw['sentiment'].get('polarity_intense', '-'),
-                                  tw['sentiment'].get('emojis', '-')])
+                                  tw['sentiment']['pleasantness'],
+                                  tw['sentiment']['attention'],
+                                  tw['sentiment']['sensitivity'],
+                                  tw['sentiment']['aptitude'],
+                                  tw['sentiment']['polarity_intense'],
+                                  tw['sentiment']['emoji']])
+
+            print("{} - {}".format(i, tw["sentiment"]))
 
     def load_got_tweets(self):
         return DatabaseConnector("UnTweeterize").get_all()
+
 
 Main_Got().run()

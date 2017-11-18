@@ -47,10 +47,10 @@ class SpamFilter(object):
         X_new_tfidf = self.tfidf_transformer.transform(X_new_counts)
 
         nb = self.predict_nb(X_new_tfidf)
-        svm = self.predict_svm(X_new_tfidf)
+        # svm = self.predict_svm(X_new_tfidf)
 
         print("nb_: {}".format(nb))
-        print("svm: {}".format(svm))
+        # print("svm: {}".format(svm))
 
         return nb
 
