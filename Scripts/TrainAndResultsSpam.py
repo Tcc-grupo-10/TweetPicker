@@ -52,7 +52,7 @@ class SpamSet(object):
         print("Aprendendo: {}".format(datetime.datetime.now()))
 
         featureVectorCount = {}
-        for (text, label) in self.trainData[:500]:
+        for (text, label) in self.trainData:
             tweetFV = Tools.getFeatureVector(text, self.nGram, self.stopwords)
             self.featureVector = Tools.updateVector(tweetFV, featureVectorCount)
             self.tweets.append(tweetFV)
