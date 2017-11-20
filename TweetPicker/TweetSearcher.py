@@ -17,13 +17,13 @@ class TweetSearcher(object):
             if not search_key.startswith("#"):
                 search_key = "#" + search_key
 
-        self.interface.log("Starting tweet capture...")
+        self.interface.log("Começando captura de Tweets...")
         search_results = self.twitter_integration.getSearch(search_key)
         for status in search_results['statuses']:
             if self.is_not_rt(status["text"]) and (len(items) < max_number_of_tweets):
                 items.append(self.create_tweet(status, search_key))
 
-        self.interface.log("Captured: {} tweets".format(len(items)))
+        self.interface.log("Tweets Capturados: {} tweets".format(len(items)))
 
 
         next_url = search_results.get("search_metadata", {}).get("next_results", "")

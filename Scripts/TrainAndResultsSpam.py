@@ -52,7 +52,7 @@ class SpamSet(object):
         print("Aprendendo: {}".format(datetime.datetime.now()))
 
         featureVectorCount = {}
-        for (text, label) in self.trainData:
+        for (text, label) in self.trainData[:500]:
             tweetFV = Tools.getFeatureVector(text, self.nGram, self.stopwords)
             self.featureVector = Tools.updateVector(tweetFV, featureVectorCount)
             self.tweets.append(tweetFV)
@@ -94,7 +94,8 @@ class SpamSet(object):
 
         docs_processed = []
         for nd in tweets:
-            docs_processed.append(Tools.getTweetFeatureVector(nd[0], self.featureVector))
+            without_topwords = self.remove_stopwords(nd[0])
+            docs_processed.append(Tools.getTweetFeatureVector(without_topwords, self.featureVector))
         print("docs_processed end: {}".format(datetime.datetime.now()))
 
         X_new_counts = self.count_vect.transform(docs_processed)
@@ -139,6 +140,10 @@ class SpamSet(object):
         f = open('../SpamFilter/binaries/tweetsTraining.txt', 'w')
         f.write(str(self.tweets))
 
+    def remove_stopwords(self, tweet):
+        tweetWords = tweet.split(" ")
+        notStopwords = list(filter(lambda x: x not in self.stopwords, tweetWords))
+        return " ".join(notStopwords)
 
     def load_test_csv(self):
         with open('../Etc/teste.csv', 'rt', encoding="utf8") as f:
@@ -168,7 +173,16 @@ class SpamSet(object):
                 self.trainData.append((text, label))
 
 
-ss = SpamSet(useStopwords=True, nGram=2, frequencyMin=2)
-ss.predict_all()
+ss1 = SpamSet(useStopwords=True, nGram=1, frequencyMin=1)
+ss1.predict_all()
+
+ss2 = SpamSet(useStopwords=False, nGram=1, frequencyMin=1)
+ss2.predict_all()
+
+ss3 = SpamSet(useStopwords=True, nGram=2, frequencyMin=1)
+ss3.predict_all()
+
+ss4 = SpamSet(useStopwords=False, nGram=2, frequencyMin=1)
+ss4.predict_all()
 
 print("Fim: {}".format(datetime.datetime.now()))

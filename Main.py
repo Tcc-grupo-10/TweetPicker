@@ -1,10 +1,12 @@
 import hashlib
 import datetime
+from tkinter import ACTIVE
 
 from Classifier.sentimentClassifier import SentimentClassifier
 from DataFormatter.DataFormatter import DataFormatter
 from Database.DatabaseConnector import DatabaseConnector
 from PreProcessor.PreProcessor import PreProcessor
+from SpamFilter.SpamFilter import SpamFilter
 from TweetPicker.TweetSearcher import TweetSearcher
 
 
@@ -24,17 +26,16 @@ class Main(object):
         self.preProcessing = PreProcessor()
         self.dataFormatter = DataFormatter()
 
-        # self.spamFiltering = SpamFiltering(self.runId, self.db)
-        # self.sentimentClassifier = SentimentClassifier(self.runId, self.db)
+        self.spamFilter = SpamFilter()
+        self.sentimentClassifier = SentimentClassifier()
 
     def run(self):
-        # Get and Process Tweets
         numberOfTweets = 10
         self.interface.log("Pegando {} Tweets sobre \"{}\"".format(numberOfTweets, self.search_key))
-        # TODO -> Uncomment after the spamFix, its working
 
         self.tweets = self.tweetPicker.search_tweets(self.search_key, numberOfTweets)
 
+        self.interface.log("Processando Tweets:\n")
         for tweet in self.tweets:
             print("original: " + tweet.original_tweet)
 
@@ -51,7 +52,18 @@ class Main(object):
             tweet.formatted_tweet = self.dataFormatter.format_data(tweet.preprocessed_tweet)
             self.db.save_formatted_tweet(tweet)
 
-            
-
             print("formatted: " + str(tweet.formatted_tweet))
             print("\n")
+
+        texts = list(map(lambda x: x.formatted_tweet, self.tweets))
+        spam_list = self.spamFilter.predict_items(texts)
+
+        for (index, tw), spam in zip(enumerate(self.tweets), spam_list):
+            tw.is_spam = spam
+
+            if tw.is_spam == "0":
+                tw.sentiment = self.sentimentClassifier.run(tw.formatted_tweet, tw.emojis)
+
+            self.interface.log("Tweet: {}\nText: {}\nSentiment: {}\n".format(index + 1, tw.formatted_tweet, tw.sentiment))
+
+        self.interface.startButton.configure(state=ACTIVE)

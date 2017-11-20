@@ -14,11 +14,11 @@ def replaceTwoOrMore(s):
     # return pattern.sub(r"\1\1", arr)
 
 
-def ngrams(input, n, stopwords):
+def ngrams(tweetWords, n, stopwords):
     output = []
-    input = list(filter(lambda x: x not in stopwords, input))
-    for i in range(len(input)-n+1):
-        output.append(input[i:i+n])
+    notStopwords = list(filter(lambda x: x not in stopwords, tweetWords))
+    for i in range(len(notStopwords)-n+1):
+        output.append(notStopwords[i:i+n])
 
     return output
 
@@ -48,7 +48,7 @@ def getStopwords(swActive):
         arr = []
         file = open('../Etc/stopwords.txt', 'r')
         for line in file:
-            arr.append(line)
+            arr.append(line.replace("\n", ""))
         return arr
     else:
         return []
