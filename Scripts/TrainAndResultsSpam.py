@@ -128,7 +128,7 @@ class SpamSet(object):
                               tweet_results[2]])
 
     def save_dataset(self):
-        np.savez('../SpamFilter/binaries/train_set.npz', data=self.train_set.data, indices=self.train_set.indices,
+        """np.savez('../SpamFilter/binaries/train_set.npz', data=self.train_set.data, indices=self.train_set.indices,
                  indptr=self.train_set.indptr, shape=self.train_set.shape)
 
         f = open('../SpamFilter/binaries/isSpamList.txt', 'w')
@@ -138,7 +138,7 @@ class SpamSet(object):
         f.write(str(self.featureVector))
 
         f = open('../SpamFilter/binaries/tweetsTraining.txt', 'w')
-        f.write(str(self.tweets))
+        f.write(str(self.tweets))"""
 
     def remove_stopwords(self, tweet):
         tweetWords = tweet.split(" ")
