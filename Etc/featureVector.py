@@ -44,8 +44,15 @@ def getAllFeatures(training_tweets, stopwords, grams, min_frequency):
 
 getAllFeatures(({"simple tweet with text": True}, {"Another text words about nothing this simple": True}, {"something about this simple tweet": False}))
 
-def getTweetFeatureVector(tweet, feature_list):
+def getTweetFeatureVector(tweet, feature_list, stopwords):
     features = []
+    
+    tweet_words = tweet.split(" ")
+    tweet_words_without_stopwords = list(filter(lambda word: word not in stopwords, tweet_words))
+    tweet = " ".join(tweet_words_without_stopwords)
+    
     for feature in feature_list:
         if feature in tweet:
             features.append(feature)
+            
+    return features
