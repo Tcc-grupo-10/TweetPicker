@@ -78,7 +78,7 @@ class SpamSet(object):
         return predicted
 
     def predict_svm(self, X_new_tfidf):
-        clf = SVC().fit(self.train_set, self.isSpamList)
+        clf = LinearSVC().fit(self.train_set, self.isSpamList)
         predicted = clf.predict(X_new_tfidf)
 
         return predicted
@@ -90,7 +90,7 @@ class SpamSet(object):
 
         file_name = '../Etc/sw_{}_ng_{}_fr_{}.csv'.format(self.useStopwords, self.nGram, self.frequencyMin)
         file_writer = csv.writer(open(file_name, 'w', newline=''))
-        file_writer.writerow(["tweet_id", "tweet", "original", "NB", "SVM0", "SVM1", "SVM2", "SVM3", "SVM4"])
+        file_writer.writerow(["tweet_id", "tweet", "original", "NB", "SVM"])
 
         docs_processed = []
         for nd in tweets:
@@ -105,51 +105,23 @@ class SpamSet(object):
         nb = self.predict_nb(X_new_tfidf)
         print("nb_: {}".format(nb))
 
-        svm0 = self.predict_svm(X_new_tfidf)
-        print("svm0: {}".format(svm0))
-
-        l1 = LinearSVC().fit(self.train_set, self.isSpamList)
-        svm1 = l1.predict(X_new_tfidf)
-        print("svm1: {}".format(svm1))
-
-        l2 = SVC(kernel='linear').fit(self.train_set, self.isSpamList)
-        svm2 = l2.predict(X_new_tfidf)
-        print("svm2: {}".format(svm2))
-
-        l3 = SVC(kernel='poly').fit(self.train_set, self.isSpamList)
-        svm3 = l3.predict(X_new_tfidf)
-        print("svm3: {}".format(svm3))
-
-        l4 = SVC(kernel='sigmoid').fit(self.train_set, self.isSpamList)
-        svm4 = l4.predict(X_new_tfidf)
-        print("svm4: {}".format(svm4))
+        svm = self.predict_svm(X_new_tfidf)
+        print("svm: {}".format(svm))
 
         print("Saving Dataset: {}".format(datetime.datetime.now()))
         self.save_dataset()
 
-
-        for tweet, n, s0, s1, s2, s3, s4 in zip(tweets, nb, svm0, svm1, svm2, svm3, svm4):
-            print("original: {}| nb: {}| svm0: {}| svm1: {}| svm2: {}| svm3: {}| svm4: {}".format(
-                tweet[1], n, s0, s1, s2, s3, s4))
+        for tweet, n, s in zip(tweets, nb, svm):
+            print("original: {}| nb: {}| svm: {}".format(
+                tweet[1], n, s))
             file_writer.writerow([tweet[2],
                                   tweet[0],
                                   tweet[1],
                                   n,
-                                  s0,
-                                  s1,
-                                  s2,
-                                  s3,
-                                  s4])
-
-    def save_in_csv(self, tweet_results, file_writer):
-        file_writer.writerow([tweet_results[0][2],
-                              tweet_results[0][0],
-                              tweet_results[0][1],
-                              tweet_results[1],
-                              tweet_results[2]])
+                                  s])
 
     def save_dataset(self):
-        """np.savez('../SpamFilter/binaries/train_set.npz', data=self.train_set.data, indices=self.train_set.indices,
+        np.savez('../SpamFilter/binaries/train_set.npz', data=self.train_set.data, indices=self.train_set.indices,
                  indptr=self.train_set.indptr, shape=self.train_set.shape)
 
         f = open('../SpamFilter/binaries/isSpamList.txt', 'w')
@@ -159,7 +131,7 @@ class SpamSet(object):
         f.write(str(self.featureVector))
 
         f = open('../SpamFilter/binaries/tweetsTraining.txt', 'w')
-        f.write(str(self.tweets))"""
+        f.write(str(self.tweets))
 
     def remove_stopwords(self, tweet):
         tweetWords = tweet.split(" ")
@@ -194,28 +166,7 @@ class SpamSet(object):
                 self.trainData.append((text, label))
 
 
-ss1 = SpamSet(useStopwords=True, nGram=1, frequencyMin=1)
+ss1 = SpamSet(useStopwords=True, nGram=2, frequencyMin=1)
 ss1.predict_all()
-
-ss2 = SpamSet(useStopwords=False, nGram=1, frequencyMin=1)
-ss2.predict_all()
-
-ss3 = SpamSet(useStopwords=True, nGram=2, frequencyMin=1)
-ss3.predict_all()
-
-ss4 = SpamSet(useStopwords=False, nGram=2, frequencyMin=1)
-ss4.predict_all()
-
-ss5 = SpamSet(useStopwords=True, nGram=1, frequencyMin=2)
-ss5.predict_all()
-
-ss6 = SpamSet(useStopwords=False, nGram=1, frequencyMin=2)
-ss6.predict_all()
-
-ss7 = SpamSet(useStopwords=True, nGram=2, frequencyMin=2)
-ss7.predict_all()
-
-ss8 = SpamSet(useStopwords=False, nGram=2, frequencyMin=2)
-ss8.predict_all()
 
 print("Fim: {}".format(datetime.datetime.now()))
