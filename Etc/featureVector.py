@@ -18,13 +18,15 @@ def getAllFeatures(training_tweets, stopwords, grams, min_frequency):
         gram_holder = []
 
         while beginning < len(tweet_words):
-            while tweet_words[beginning] in stopwords and beginning < len(tweet_words) - 1:
-                beginning += 1
+            while tweet_words[beginning] in stopwords 
+                and beginning < len(tweet_words) - 1:
+                    beginning += 1
             end = beginning
             gram_holder.append(tweet_words[beginning])
 
-            while len(gram_holder) < grams and end < len(tweet_words) - 1:
-                end += 1
+            while len(gram_holder) < grams 
+                and end < len(tweet_words) - 1:
+                    end += 1
                 if tweet_words[end] not in stopwords:
                     gram_holder.append(tweet_words[end])
 
