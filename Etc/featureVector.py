@@ -48,7 +48,8 @@ def getTweetFeatureVector(tweet, feature_list, stopwords):
     features = []
     
     tweet_words = tweet.split(" ")
-    tweet_words_without_stopwords = list(filter(lambda word: word not in stopwords, tweet_words))
+    tweet_words_without_stopwords = list(
+        filter(lambda word: word not in stopwords, tweet_words))
     tweet = " ".join(tweet_words_without_stopwords)
     
     for feature in feature_list:
