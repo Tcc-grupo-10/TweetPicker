@@ -10,12 +10,12 @@ class ConceptExtractor(object):
         java_path = "C:\Program Files (x86)\Java\jdk1.8.0_152"
         os.environ['JAVAHOME'] = java_path
 
-        parser_jar_path = 'Etc/stanford-parser.jar'
-        parser_models_path = 'Etc/stanford-parser-3.8.0-models.jar'
+        parser_jar_path = 'Classifier/binaries/stanford-parser.jar'
+        parser_models_path = 'Classifier/binaries/stanford-parser-3.8.0-models.jar'
         self.parser = StanfordParser(parser_jar_path, parser_models_path)
 
         self.stop_words = []
-        file = open('Etc/stopwords.txt', 'r')
+        file = open('SpamFilter/binaries/stopwords.txt', 'r')
         for line in file:
             line = line.strip("\n")
             self.stop_words.append(line)

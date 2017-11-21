@@ -57,6 +57,10 @@ class Main(object):
 
         texts = list(map(lambda x: x.formatted_tweet, self.tweets))
         spam_list = self.spamFilter.predict_items(texts)
+        spam_amount = len(list(filter(lambda x: x == "1", spam_list)))
+
+        self.interface.log("Total tweets: {}\nTotal spam: {}\nTotal normal: {}\n".
+                           format(len(spam_list), spam_amount, len(spam_list) - spam_amount))
 
         for (index, tw), spam in zip(enumerate(self.tweets), spam_list):
             tw.is_spam = spam
@@ -67,3 +71,4 @@ class Main(object):
             self.interface.log("Tweet: {}\nText: {}\nSentiment: {}\n".format(index + 1, tw.formatted_tweet, tw.sentiment))
 
         self.interface.startButton.configure(state=ACTIVE)
+        self.interface.log("Processo Finalizado")

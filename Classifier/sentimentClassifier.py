@@ -1,6 +1,6 @@
 from Classifier.conceptExtractor import ConceptExtractor
 from Classifier.SenticNet import SenticNet
-from Emojinator import Emojinator
+from Emojis.Emojinator import Emojinator
 
 
 class SentimentClassifier(object):

@@ -2,8 +2,7 @@ import re
 import xml
 
 from unidecode import unidecode
-
-from Emojinator import Emojinator
+from Emojis.Emojinator import Emojinator
 
 
 class PreProcessor(object):
