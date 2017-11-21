@@ -26,9 +26,7 @@ class ConceptExtractor(object):
         self.NOUN = ["NN", "NNS", "NNP", "NNPS"]
         self.VERB = ["VB", "VBD", "VBG", "VBN", "VBP", "VBZ"]
 
-    def extract_list_of_event_concepts(self,
-                                       tweet_text="Game Of Thrones is awesome"):
-        # print("text: " + tweet_text)
+    def extract_list_of_event_concepts(self, tweet_text):
 
         list_of_concepts = []
         list_of_np_and_parent_nodes = []
@@ -38,14 +36,10 @@ class ConceptExtractor(object):
         # print("number of sentences" + str(len(sentence_list)))
         if len(sentence_list) != 0:
             for sentence in sentence_list:
-                ""
-                # print(sentence)
-            for sentence in sentence_list:
                 list_of_np_and_parent_nodes.extend(self.get_list_of_np_and_parents(sentence, [], []))
         else:
             list_of_np_and_parent_nodes.extend(self.get_list_of_np_and_parents(tweet_tree, [], []))
 
-        # print(list_of_np_and_parent_nodes)
         list_of_np_and_verbs = [self.get_np_and_verb(np) for np in list_of_np_and_parent_nodes]
         lemmatized_list_of_np_and_verbs = []
         for np, verb in list_of_np_and_verbs:
@@ -77,7 +71,7 @@ class ConceptExtractor(object):
         return list_of_concepts
 
     def extract_list_of_object_concepts(self, noun_phrase):
-        '''noun_phrase = list of tuples in the format (word, pos_tag)'''
+        """noun_phrase = list of tuples in the format (word, pos_tag)"""
         list_of_object_concepts = []
         if len(noun_phrase) == 1:
             if noun_phrase[0][1] in self.ADJ or noun_phrase[0][1] in self.NOUN:

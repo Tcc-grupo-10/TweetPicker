@@ -65,8 +65,6 @@ class Application:
 
     def start_thead(self):
         term = self.term.get()
-        self.txt.insert(END, "Processo Iniciado:")
-        self.txt.see("end")
         main = Main(term, self)
         _thread.start_new_thread(main.run, ())
 

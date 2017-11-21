@@ -42,7 +42,6 @@ class SpamFilter(object):
         X_new_tfidf = self.tfidf_transformer.transform(X_new_counts)
 
         svm = self.predict_svm(X_new_tfidf)
-
         return svm
 
     def remove_stopwords(self, tweet):

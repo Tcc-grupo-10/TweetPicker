@@ -57,6 +57,26 @@ class DatabaseConnector(object):
             ExpressionAttributeValues={':r': tweet.formatted_tweet}
         )
 
+    def save_is_spam(self, tweet):
+        self._table.update_item(
+            Key={
+                'runID': tweet.run_id,
+                'tweetID': tweet.id,
+            },
+            UpdateExpression="set is_spam = :r ",
+            ExpressionAttributeValues={':r': tweet.is_spam}
+        )
+
+    def save_sentiment(self, tweet):
+        self._table.update_item(
+            Key={
+                'runID': tweet.run_id,
+                'tweetID': tweet.id,
+            },
+            UpdateExpression="set sentiment = :r ",
+            ExpressionAttributeValues={':r': tweet.sentiment}
+        )
+
     def get_all(self):
         response = self._table.scan()
         allTweets = response['Items']
