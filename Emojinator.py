@@ -39,7 +39,6 @@ class Emojinator(object):
 
         try:
             sentiment = self.emojiFeelings[emoj]
-            # print("{} -> {}".format(emoj, sentiment))
             return sentiment
         except:
             return 0
