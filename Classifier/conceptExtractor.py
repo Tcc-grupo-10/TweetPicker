@@ -153,3 +153,6 @@ class ConceptExtractor(object):
             return wordnet.ADV
         else:
             return None
+
+
+# ConceptExtractor().extract_list_of_event_concepts("I'll give 20 bucks who could guess what I'm going to reward myself after I'm done with this final paper")

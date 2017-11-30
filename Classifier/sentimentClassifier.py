@@ -16,6 +16,9 @@ class SentimentClassifier(object):
         emojis_sentiments = self.emojinator.get_feelings(emojis)
 
         calc_sentiments = self.calc_feelings(sentic_net_sentiments, emojis_sentiments)
+
+        print("\n\nTweet: {}\nconcepts: {}\nsentic_net: {}\nemojis: {}\n\n".format(tweet_text, concepts, sentic_net_sentiments, calc_sentiments))
+
         return calc_sentiments
 
     def calc_feelings(self, sentic_net, emojis):

@@ -31,7 +31,7 @@ class Main(object):
         self.sentimentClassifier = SentimentClassifier()
 
     def run(self):
-        numberOfTweets = 10
+        numberOfTweets = 15
         self.interface.log("Pegando {} Tweets sobre \"{}\"".format(numberOfTweets, self.search_key))
 
         self.tweets = self.tweetPicker.search_tweets(self.search_key, numberOfTweets)
@@ -43,15 +43,15 @@ class Main(object):
             # PreProcessing
             (pre_processed_text, emoji_list) = self.preProcessing.pre_process_tweet(tweet.original_tweet)
             tweet.emojis = emoji_list
-            tweet.preprocessed_tweet = self.dataFormatter.format_data(pre_processed_text)
+            tweet.preprocessed_tweet = pre_processed_text
 
-            self.db.save_preprocessed_tweet(tweet)
+            # self.db.save_preprocessed_tweet(tweet)
             print("preprocessed: " + tweet.preprocessed_tweet)
             print("emojis: " + str(tweet.emojis))
 
             # Formatting
             tweet.formatted_tweet = self.dataFormatter.format_data(tweet.preprocessed_tweet)
-            self.db.save_formatted_tweet(tweet)
+            # self.db.save_formatted_tweet(tweet)
 
             print("formatted: " + str(tweet.formatted_tweet))
             print("\n")
@@ -65,13 +65,13 @@ class Main(object):
 
         for (index, tw), spam in zip(enumerate(self.tweets), spam_list):
             tw.is_spam = spam
-            self.db.save_is_spam(tw)
+            # self.db.save_is_spam(tw)
             if tw.is_spam == "0":
                 tw.sentiment = self.sentimentClassifier.run(tw.formatted_tweet, tw.emojis)
-                self.db.save_sentiment(tw)
+                # self.db.save_sentiment(tw)
                 self.tweet_sentiments.append(tw.sentiment)
 
-            self.interface.log("Tweet: {}\nText: {}\nSentiment: {}\n".format(index + 1, tw.formatted_tweet, tw.sentiment))
+            self.interface.log("Tweet: {}\nSpam: {}\nText: {}\nSentiment: {}\n".format(index + 1, tw.is_spam, tw.formatted_tweet, tw.sentiment))
 
         self.interface.startButton.configure(state=ACTIVE)
 
@@ -90,7 +90,7 @@ class Main(object):
         sentic_uses = 0
 
         for sentic in sentic_filtered:
-            if sentiment_avg['pleasantness'] != "":
+            if sentic['pleasantness'] != '' and sentiment_avg['pleasantness'] != '':
                 sentic_uses += 1
                 sentiment_avg['pleasantness'] += float(sentic['pleasantness'])
                 sentiment_avg['attention'] += float(sentic['attention'])
